@@ -4,10 +4,14 @@
 " Copyright 2010 Andrew Stewart, <boss@airbladesoftware.com>
 " Released under the MIT licence.
 "
-" You can invoke this manually with <Leader>cd (usually \cd).
 " This will happen automatically for typical Ruby webapp files.
 "
-" Install in ~/.vim/plugin/rooter.vim
+" You can invoke it manually with <Leader>cd (usually \cd).
+" To change the mapping, put this in your .vimrc:
+"
+"     map <silent> <unique> <Leader>foo <Plug>RooterChangeToRootDirectory
+"
+" ... where <Leader>foo is your preferred mapping.
 
 
 "
