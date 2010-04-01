@@ -17,6 +17,10 @@ let loaded_rooter = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
+"
+" Functions
+"
+
 " Changes the current working directory to the root of the current file's
 " project (if and only if it finds a .git directory).
 function! s:ChangeToRootDirectory()
@@ -28,8 +32,19 @@ function! s:ChangeToRootDirectory()
   end
 endfunction
 
+"
+" Mappings
+"
+if !hasmapto("<Plug>RooterChangeToRootDirectory")
+  map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
+endif
+noremap <unique> <script> <Plug>RooterChangeToRootDirectory <SID>ChangeToRootDirectory
+noremap <SID>ChangeToRootDirectory :call <SID>ChangeToRootDirectory()<CR>
+
+"
+" Commands
+"
 command! Rooter :call <SID>ChangeToRootDirectory()
-map <silent> <unique> <Leader>cd :Rooter<CR>
 autocmd BufEnter *.rb,*.html,*.haml,*.erb,*.rjs,*.css,*.js :Rooter
 
 let &cpo = s:save_cpo
