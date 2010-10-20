@@ -53,7 +53,7 @@ function! s:FindRootDirectory()
     let result = s:FindSCMDirectory(scmdir)
     if !empty(result)
       return result
-    end
+    endif
   endfor
 endfunction
 
