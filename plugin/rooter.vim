@@ -1,5 +1,5 @@
 " Vim plugin to change the working directory to the project root
-" (identified by the presence of a .git directory).
+" (identified by the presence of a known SCM tool directory).
 "
 " Copyright 2010 Andrew Stewart, <boss@airbladesoftware.com>
 " Released under the MIT licence.
@@ -30,25 +30,38 @@ set cpo&vim
 " Functions
 "
 
-" Returns the root directory for the current file, i.e the
-" closest parent directory containing a .git directory, or
-" an empty string if no such directory is found.
-function! s:FindRootDirectory()
+" Find the root directory of the current file, i.e the closest parent directory 
+" containing a <scm_type> directory, or an empty string if no such directory 
+" is found.
+function! s:FindSCMDirectory(scm_type)
   let dir_current_file = expand("%:p:h")
-  let git_dir = finddir(".git", dir_current_file . ";")
+  let scm_dir = finddir(a:scm_type, dir_current_file . ";")
   " If we're at the project root or we can't find one above us
-  if git_dir == ".git" || git_dir == ""
+  if scm_dir == a:scm_type || empty(scm_dir)
     return ""
   else
-    return substitute(git_dir, "/.git$", "", "")
+    return substitute(scm_dir, "/" . a:scm_type . "$", "", "")
   endif
+endfunction
+
+" Returns the root directory for the current file based on the list of 
+" known SCM directory names.
+function! s:FindRootDirectory()
+  " add any future tools here
+  let scm_list = ['_darcs', '.hg', '.git']
+  for scmdir in scm_list
+    let result = s:FindSCMDirectory(scmdir)
+    if !empty(result)
+      return result
+    end
+  endfor
 endfunction
 
 " Changes the current working directory to the current file's
 " root directory.
 function! s:ChangeToRootDirectory()
   let root_dir = s:FindRootDirectory()
-  if root_dir != ""
+  if !empty(root_dir) 
     exe ":cd " . root_dir
   endif
 endfunction
