@@ -12,6 +12,11 @@
 "     map <silent> <unique> <Leader>foo <Plug>RooterChangeToRootDirectory
 "
 " ... where <Leader>foo is your preferred mapping.
+"
+" Options:
+"   let g:RooterUseLocalCD = 1
+"     Use :lcd instead of :cd
+"
 
 
 "
@@ -25,6 +30,10 @@ let loaded_rooter = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
+
+if !exists("g:RooterUseLocalCD")
+  let g:RooterUseLocalCD = 0
+endif
 
 "
 " Functions
@@ -62,7 +71,11 @@ endfunction
 function! s:ChangeToRootDirectory()
   let root_dir = s:FindRootDirectory()
   if !empty(root_dir) 
-    exe ":cd " . root_dir
+    if g:RooterUseLocalCD ==# 1
+      exe ":lcd " . root_dir
+    else
+      exe ":cd " . root_dir
+    endif
   endif
 endfunction
 
