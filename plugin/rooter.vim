@@ -71,7 +71,7 @@ endfunction
 function! s:ChangeToRootDirectory()
   let root_dir = s:FindRootDirectory()
   if !empty(root_dir)
-    if exists('+autochdir') 
+    if exists('+autochdir')
       set noautochdir
     endif
     if g:rooter_use_lcd ==# 1
