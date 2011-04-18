@@ -4,14 +4,17 @@
 " Copyright 2010 Andrew Stewart, <boss@airbladesoftware.com>
 " Released under the MIT licence.
 "
-" This will happen automatically for typical Ruby webapp files.
-"
 " You can invoke it manually with <Leader>cd (usually \cd).
 " To change the mapping, put this in your .vimrc:
 "
 "     map <silent> <unique> <Leader>foo <Plug>RooterChangeToRootDirectory
 "
 " ... where <Leader>foo is your preferred mapping.
+"
+" You can also setup autocmd to automatically call :Rooter
+"
+"     autocmd BufEnter *.rb :Rooter  "only for Ruby files
+"     autocmd BufEnter * :Rooter     "for all files
 "
 " Options:
 "   let g:rooter_use_lcd = 1
@@ -97,7 +100,6 @@ noremap <SID>ChangeToRootDirectory :call <SID>ChangeToRootDirectory()<CR>
 "
 
 command! Rooter :call <SID>ChangeToRootDirectory()
-autocmd BufEnter *.rb,*.html,*.haml,*.erb,*.rjs,*.css,*.js :Rooter
 
 "
 " Boilerplate
