@@ -49,6 +49,13 @@ function! s:FindSCMDirectory(scm_type)
   endif
 
   let dir_current_file = expand("%:p:h")
+
+  " If we're inside of the scm dir (.git) treat it as a miss
+  " This makes vim-rooter play nice with plugins like fugitive
+  if match(dir_current_file, a:scm_type)
+    return ""
+  endif
+
   let scm_dir = finddir(a:scm_type, dir_current_file . ";")
   " If we're at the project root or we can't find one above us
   if scm_dir == a:scm_type || empty(scm_dir)
