@@ -39,11 +39,11 @@ endif
 " Functions
 "
 
-" Find the root directory of the current file, i.e the closest parent directory 
-" containing a <scm_type> directory, or an empty string if no such directory 
+" Find the root directory of the current file, i.e the closest parent directory
+" containing a <scm_type> directory, or an empty string if no such directory
 " is found.
 function! s:FindSCMDirectory(scm_type)
-  " don't try to change directories when on a virtual filesystem (netrw, fugitive,...)
+  " Don't try to change directories when on a virtual filesystem (netrw, fugitive,...).
   if match(expand('%:p'), '^\<.\+\>://.*') != -1
     return ""
   endif
@@ -58,7 +58,7 @@ function! s:FindSCMDirectory(scm_type)
   endif
 endfunction
 
-" Returns the root directory for the current file based on the list of 
+" Returns the root directory for the current file based on the list of
 " known SCM directory names.
 function! s:FindRootDirectory()
   " add any future tools here
