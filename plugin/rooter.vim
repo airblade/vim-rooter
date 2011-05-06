@@ -43,6 +43,11 @@ endif
 " containing a <scm_type> directory, or an empty string if no such directory 
 " is found.
 function! s:FindSCMDirectory(scm_type)
+  " don't try to change directories when on a virtual filesystem (netrw, fugitive,...)
+  if match(expand('%:p'), '^\<.\+\>://.*') != -1
+    return ""
+  endif
+
   let dir_current_file = expand("%:p:h")
   let scm_dir = finddir(a:scm_type, dir_current_file . ";")
   " If we're at the project root or we can't find one above us
