@@ -5,6 +5,10 @@
 " Released under the MIT licence.
 "
 " This will happen automatically for typical Ruby webapp files.
+" If you don't want it to happen automatically, create the file
+" `.vim/after/plugin/vim-rooter.vim` with the single command:
+"
+"     autocmd! rooter
 "
 " You can invoke it manually with <Leader>cd (usually \cd).
 " To change the mapping, put this in your .vimrc:

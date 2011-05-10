@@ -1,3 +1,55 @@
 # Rooter
 
-Install into `~/.vim/plugin/rooter.vim`.
+Rooter is a Vim plugin which changes the working directory to the project root
+when you open a file.
+
+More accurately, it'll do this when you open a typical webapp file.  These files
+are identified by their extension.
+
+The project root is identified by the presence of a DVCS directory.  Currently
+git, darcs, mercurial and bazaar are supported.
+
+
+## Use
+
+By default you don't need to do anything: vim-rooter will change the working
+directory automatically.
+
+You can always invoke vim-rooter manually with `<Leader>cd`.
+
+
+## Configuration
+
+You can change the manual-invocation mapping by adding this to your `.vimrc`:
+
+    map <silent> <unique> <Leader>foo <Plug>RooterChangeToRootDirectory
+
+where `<Leader>foo` is the mapping you want.
+
+You can change the file extensions which trigger vim-rooter with autocommands
+in `~/.vim/after/plugin/vim-rooter.vim`.  You'll need to create this file, and
+possibly the directories, yourself.
+
+To add a file extension, e.g. foo:
+
+    autocmd rooter BufEnter *.foo :Rooter
+
+To remove a file extension, e.g. js:
+
+    autocmd! rooter BufEnter *.js
+
+To remove all the file extensions so vim-rooter doesn't change directory
+automatically at all:
+
+    autocmd! rooter
+
+Finally you can have vim-rooter locally change directory (`lcd`) instead of
+changing directory (`cd`) by adding this to your `.vimrc`:
+
+    let g:rooter_use_lcd = 1
+
+
+## Installation
+
+Install into `~/.vim/plugin/rooter.vim` or, if you're using Pathogen, into
+`~/.vim/bundle/rooter.vim`..
