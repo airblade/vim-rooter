@@ -43,8 +43,8 @@ automatically at all:
 
     autocmd! rooter
 
-Finally you can have vim-rooter locally change directory (`lcd`) instead of
-changing directory (`cd`) by adding this to your `.vimrc`:
+Finally you can have vim-rooter locally change directory (`:lcd`) instead of
+changing directory (`:cd`) by adding this to your `.vimrc`:
 
     let g:rooter_use_lcd = 1
 
@@ -52,4 +52,4 @@ changing directory (`cd`) by adding this to your `.vimrc`:
 ## Installation
 
 Install into `~/.vim/plugin/rooter.vim` or, if you're using Pathogen, into
-`~/.vim/bundle/rooter.vim`..
+`~/.vim/bundle/rooter.vim`.
