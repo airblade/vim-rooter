@@ -58,7 +58,7 @@ function! s:FindSCMDirectory(scm_type)
   if scm_dir == a:scm_type || empty(scm_dir)
     return ""
   else
-    return substitute(scm_dir, "/" . a:scm_type . "$", "", "")
+    return substitute(scm_dir, a:scm_type . "$", "", "")
   endif
 endfunction
 
