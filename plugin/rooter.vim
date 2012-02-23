@@ -66,7 +66,7 @@ endfunction
 " known SCM directory names.
 function! s:FindRootDirectory()
   " add any future tools here
-  let scm_list = ['.git', '_darcs', '.hg', '.bzr']
+  let scm_list = ['.git', '_darcs', '.hg', '.bzr', '.svn']
   for scmdir in scm_list
     let result = s:FindSCMDirectory(scmdir)
     if !empty(result)
