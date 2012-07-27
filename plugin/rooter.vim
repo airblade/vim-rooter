@@ -35,8 +35,17 @@ let loaded_rooter = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
+
+"
+" User configuration
+"
+"
 if !exists("g:rooter_use_lcd")
   let g:rooter_use_lcd = 0
+endif
+
+if (!exists('g:rooter_patterns'))
+  let g:rooter_patterns = []
 endif
 
 "
@@ -44,21 +53,30 @@ endif
 "
 
 " Find the root directory of the current file, i.e the closest parent directory
-" containing a <scm_type> directory, or an empty string if no such directory
+" containing a <pattern> directory, or an empty string if no such directory
 " is found.
-function! s:FindSCMDirectory(scm_type)
+function! s:FindInCurrentPath(pattern)
   " Don't try to change directories when on a virtual filesystem (netrw, fugitive,...).
   if match(expand('%:p'), '^\<.\+\>://.*') != -1
     return ""
   endif
 
   let dir_current_file = expand("%:p:h")
-  let scm_dir = finddir(a:scm_type, dir_current_file . ";")
+  let pattern_dir = ""
+
+  " Check for directory or a file
+  if (stridx(a:pattern, "/")) != -1
+    let pattern = substitute(a:pattern, "/", "", "")
+    let pattern_dir = finddir(a:pattern, dir_current_file . ";")
+  else
+    let pattern_dir = findfile(a:pattern, dir_current_file . ";")
+  endif
+
   " If we're at the project root or we can't find one above us
-  if scm_dir == a:scm_type || empty(scm_dir)
+  if pattern_dir == a:pattern || empty(pattern_dir)
     return ""
   else
-    return substitute(scm_dir, a:scm_type . "$", "", "")
+    return substitute(pattern_dir, a:pattern . "$", "", "")
   endif
 endfunction
 
@@ -66,9 +84,9 @@ endfunction
 " known SCM directory names.
 function! s:FindRootDirectory()
   " add any future tools here
-  let scm_list = ['.git', '_darcs', '.hg', '.bzr', '.svn']
-  for scmdir in scm_list
-    let result = s:FindSCMDirectory(scmdir)
+  let pattern_list = g:rooter_patterns + ['tags', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
+  for pattern in pattern_list
+    let result = s:FindInCurrentPath(pattern)
     if !empty(result)
       return result
     endif
