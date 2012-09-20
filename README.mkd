@@ -6,8 +6,9 @@ when you open a file.
 More accurately, it'll do this when you open a typical webapp file.  These files
 are identified by their extension.
 
-The project root is identified by the presence of a DVCS directory.  Currently
-git, darcs, mercurial and bazaar are supported.
+The project root is identified by the presence of known directory, such as a VCS
+directory, or file, such as a Rakefile.  Currently git, darcs, mercurial, bazaar,
+and subversion are supported.
 
 
 ## Use
@@ -42,6 +43,13 @@ To remove all the file extensions so vim-rooter doesn't change directory
 automatically at all:
 
     autocmd! rooter
+
+You can set your own directory and file patterns like this:
+
+    let g:rooter_patterns = ['Rakefile', '.git/']
+
+Note this overwrites the default patterns.  Also note directories should have
+a trailing slash.
 
 Finally you can have vim-rooter locally change directory (`:lcd`) instead of
 changing directory (`:cd`) by adding this to your `.vimrc`:

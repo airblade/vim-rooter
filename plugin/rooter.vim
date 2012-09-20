@@ -1,5 +1,8 @@
-" Vim plugin to change the working directory to the project root
-" (identified by the presence of a known SCM tool directory).
+" Vim plugin to change the working directory to the project root.
+"
+" The project root is identified by the presence of a directory,
+" such as a VCS directory, or a file, such as a Rakefile.  See
+" the Options section below for how to configure this.
 "
 " Copyright 2010 Andrew Stewart, <boss@airbladesoftware.com>
 " Released under the MIT licence.
@@ -18,8 +21,23 @@
 " ... where <Leader>foo is your preferred mapping.
 "
 " Options:
-"   let g:rooter_use_lcd = 1
-"     Use :lcd instead of :cd
+"   g:rooter_patterns
+"
+"   This is an array of directories and files to look for.
+"   By default it is an array of common VCS directories.
+"   You can set your own patterns with something like:
+"
+"     let g:rooter_patterns = ['Rakefile', '.git/']
+"
+"   Note this overwrites the default patterns.
+"
+"
+"   g:rooter_user_lcd
+"
+"   This tells Vim to use `lcd` instead of `cd` (the default)
+"   when changing directory.  Set it like this:
+"
+"     let g:rooter_use_lcd = 1
 "
 
 
