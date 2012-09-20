@@ -44,8 +44,8 @@ if !exists("g:rooter_use_lcd")
   let g:rooter_use_lcd = 0
 endif
 
-if (!exists('g:rooter_patterns'))
-  let g:rooter_patterns = []
+if !exists('g:rooter_patterns')
+  let g:rooter_patterns = ['tags', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
 endif
 
 "
@@ -83,9 +83,7 @@ endfunction
 " Returns the root directory for the current file based on the list of
 " known SCM directory names.
 function! s:FindRootDirectory()
-  " add any future tools here
-  let pattern_list = g:rooter_patterns + ['tags', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
-  for pattern in pattern_list
+  for pattern in g:rooter_patterns
     let result = s:FindInCurrentPath(pattern)
     if !empty(result)
       return result
