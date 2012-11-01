@@ -79,7 +79,7 @@ function! s:FindInCurrentPath(pattern)
     return ""
   endif
 
-  let dir_current_file = expand("%:p:h")
+  let dir_current_file = fnameescape(expand("%:p:h"))
   let pattern_dir = ""
 
   " Check for directory or a file
@@ -118,9 +118,9 @@ function! s:ChangeToRootDirectory()
       set noautochdir
     endif
     if g:rooter_use_lcd ==# 1
-      exe ":lcd " . root_dir
+      exe ":lcd " . fnameescape(root_dir)
     else
-      exe ":cd " . root_dir
+      exe ":cd " . fnameescape(root_dir)
     endif
   endif
 endfunction
