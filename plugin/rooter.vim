@@ -142,7 +142,7 @@ noremap <SID>ChangeToRootDirectory :call <SID>ChangeToRootDirectory()<CR>
 command! Rooter :call <SID>ChangeToRootDirectory()
 augroup rooter
   autocmd!
-  autocmd BufEnter *.rb,*.html,*.haml,*.erb,*.rjs,*.css,*.js,*.php,*.xml,*.yaml,*.scss,*.sass,*.less,*.haml,*.coffee,*.markdown,*.md,*.py :Rooter
+  autocmd BufEnter *.rb,*.html,*.haml,*.erb,*.rjs,*.css,*.js,*.php,*.xml,*.yaml,*.scss,*.sass,*.less,*.coffee,*.markdown,*.md,*.py :Rooter
 augroup END
 
 "
