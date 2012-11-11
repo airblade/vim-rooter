@@ -75,7 +75,7 @@ endif
 " is found.
 function! s:FindInCurrentPath(pattern)
   " Don't try to change directories when on a virtual filesystem (netrw, fugitive,...).
-  if match(expand('%:p'), '^\<.\+\>://.*') != -1
+  if match(expand('%:p'), '^\w\+://.*') != -1
     return ""
   endif
 
