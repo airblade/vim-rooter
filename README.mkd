@@ -39,10 +39,9 @@ To remove a file extension, e.g. js:
 
     autocmd! rooter BufEnter *.js
 
-To remove all the file extensions so vim-rooter doesn't change directory
-automatically at all:
+To stop vim-rooter changing directory automatically, add this to your `.vimrc`:
 
-    autocmd! rooter
+    let g:rooter_manual_only = 1
 
 You can set your own directory and file patterns like this:
 

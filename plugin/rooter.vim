@@ -39,16 +39,23 @@
 "
 "     let g:rooter_use_lcd = 1
 "
+"
+"   g:rooter_manual_only
+"
+"   Set this to stop vim-rooter changing directory automatically:
+"
+"     let g:rooter_manual_only = 1
 
 
 "
 " Boilerplate
 "
 
-if exists("loaded_rooter")
+if exists("g:loaded_rooter")
   finish
+else
+  let g:loaded_rooter = 1
 endif
-let loaded_rooter = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -140,16 +147,18 @@ noremap <SID>ChangeToRootDirectory :call <SID>ChangeToRootDirectory()<CR>
 "
 
 command! Rooter :call <SID>ChangeToRootDirectory()
-augroup rooter
-  autocmd!
-  autocmd BufEnter *.rb,*.py,
-        \*.html,*.haml,*.erb,
-        \*.css,*.scss,*.sass,*.less,
-        \*.js,*.rjs,*.coffee,
-        \*.php,*.xml,*.yaml,
-        \*.markdown,*.md
-        \ :Rooter
-augroup END
+if !exists("g:rooter_manual_only")
+  augroup rooter
+    autocmd!
+    autocmd BufEnter *.rb,*.py,
+          \*.html,*.haml,*.erb,
+          \*.css,*.scss,*.sass,*.less,
+          \*.js,*.rjs,*.coffee,
+          \*.php,*.xml,*.yaml,
+          \*.markdown,*.md
+          \ :Rooter
+  augroup END
+endif
 
 "
 " Boilerplate
