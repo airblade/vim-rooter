@@ -154,7 +154,7 @@ if !exists("g:rooter_manual_only")
           \*.html,*.haml,*.erb,
           \*.css,*.scss,*.sass,*.less,
           \*.js,*.rjs,*.coffee,
-          \*.php,*.xml,*.yaml,
+          \*.php,*.xml,*.yaml,*.yml,
           \*.markdown,*.md
           \ :Rooter
   augroup END
