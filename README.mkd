@@ -50,10 +50,15 @@ You can set your own directory and file patterns like this:
 Note this overwrites the default patterns.  Also note directories should have
 a trailing slash.
 
-Finally you can have vim-rooter locally change directory (`:lcd`) instead of
+You can have vim-rooter locally change directory (`:lcd`) instead of
 changing directory (`:cd`) by adding this to your `.vimrc`:
 
     let g:rooter_use_lcd = 1
+
+When vim-rooter encounters a non-project file, it won't change directory by default.
+If you would instead like vim-rooter to change to the file's directory, do this:
+
+    let g:rooter_change_directory_for_non_project_files = 1
 
 
 ## Installation
