@@ -47,31 +47,45 @@
 "     let g:rooter_manual_only = 1
 
 
-"
-" Boilerplate
-"
-
-if exists("g:loaded_rooter")
+if exists('g:loaded_rooter') || &cp
   finish
-else
-  let g:loaded_rooter = 1
 endif
-
-let s:save_cpo = &cpo
-set cpo&vim
+let g:loaded_rooter = 1
 
 
 "
 " User configuration
 "
 "
-if !exists("g:rooter_use_lcd")
+if !exists('g:rooter_use_lcd')
   let g:rooter_use_lcd = 0
 endif
 
 if !exists('g:rooter_patterns')
   let g:rooter_patterns = ['.git/', '.git', '_darcs/', '.hg/', '.bzr/', '.svn/']
 endif
+
+"
+" Utility
+"
+
+function! s:IsVirtualFileSystem()
+  return match(expand('%:p'), '^\w\+://.*') != -1
+endfunction
+
+function! s:IsNormalFile()
+  return empty(&buftype)
+endfunction
+
+function! s:ChangeDirectory(directory)
+  let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
+  execute ':' . cmd . ' ' . fnameescape(a:directory)
+endfunction
+
+function! s:IsDirectory(pattern)
+  return stridx(a:pattern, '/') != -1
+endfunction
+
 
 "
 " Functions
@@ -81,23 +95,23 @@ endif
 " containing a <pattern> directory, or an empty string if no such directory
 " is found.
 function! s:FindInCurrentPath(pattern)
-  let dir_current_file = fnameescape(expand("%:p:h"))
-  let pattern_dir = ""
+  let dir_current_file = fnameescape(expand('%:p:h'))
+  let project_dir = ''
 
-  " Check for directory or a file
-  if (stridx(a:pattern, "/")) != -1
-    let pattern = substitute(a:pattern, "/", "", "")
-    let pattern_dir = finddir(a:pattern, dir_current_file . ";")
+  if s:IsDirectory(a:pattern)
+    let match = finddir(a:pattern, dir_current_file . ';')
   else
-    let pattern_dir = findfile(a:pattern, dir_current_file . ";")
+    let match = findfile(a:pattern, dir_current_file . ';')
   endif
 
-  " If we're at the project root or we can't find one above us
-  if pattern_dir == a:pattern || empty(pattern_dir)
-    return ""
-  else
-    return substitute(pattern_dir, a:pattern . "$", "", "")
+  if empty(match)
+    return ''
   endif
+
+  let match = fnamemodify(match, ':p')
+  let project_dir = substitute(match, a:pattern . '$', '', '')
+
+  return project_dir
 endfunction
 
 " Returns the root directory for the current file based on the list of
@@ -114,12 +128,7 @@ endfunction
 " Changes the current working directory to the current file's
 " root directory.
 function! s:ChangeToRootDirectory()
-  " Don't try to change directories when on a virtual filesystem (netrw, fugitive,...).
-  if match(expand('%:p'), '^\w\+://.*') != -1
-    return ""
-  endif
-
-  if empty(&buftype)
+  if s:IsVirtualFileSystem() || !s:IsNormalFile()
     return ''
   endif
 
@@ -128,11 +137,7 @@ function! s:ChangeToRootDirectory()
     if exists('+autochdir')
       set noautochdir
     endif
-    if g:rooter_use_lcd ==# 1
-      exe ":lcd " . fnameescape(root_dir)
-    else
-      exe ":cd " . fnameescape(root_dir)
-    endif
+    call s:ChangeDirectory(root_dir)
   endif
 endfunction
 
@@ -151,7 +156,7 @@ noremap <SID>ChangeToRootDirectory :call <SID>ChangeToRootDirectory()<CR>
 "
 
 command! Rooter :call <SID>ChangeToRootDirectory()
-if !exists("g:rooter_manual_only")
+if !exists('g:rooter_manual_only')
   augroup rooter
     autocmd!
     autocmd BufEnter *.rb,*.py,
@@ -163,11 +168,5 @@ if !exists("g:rooter_manual_only")
           \ :Rooter
   augroup END
 endif
-
-"
-" Boilerplate
-"
-
-let &cpo = s:save_cpo
 
 " vim:set ft=vim sw=2 sts=2 et:
