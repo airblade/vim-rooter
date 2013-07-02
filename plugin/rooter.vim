@@ -103,11 +103,6 @@ endfunction
 " Returns the root directory for the current file based on the list of
 " known SCM directory names.
 function! s:FindRootDirectory()
-  " Don't try to change directories when on a virtual filesystem (netrw, fugitive,...).
-  if match(expand('%:p'), '^\w\+://.*') != -1
-    return ""
-  endif
-
   for pattern in g:rooter_patterns
     let result = s:FindInCurrentPath(pattern)
     if !empty(result)
@@ -119,6 +114,11 @@ endfunction
 " Changes the current working directory to the current file's
 " root directory.
 function! s:ChangeToRootDirectory()
+  " Don't try to change directories when on a virtual filesystem (netrw, fugitive,...).
+  if match(expand('%:p'), '^\w\+://.*') != -1
+    return ""
+  endif
+
   let root_dir = s:FindRootDirectory()
   if !empty(root_dir)
     if exists('+autochdir')
