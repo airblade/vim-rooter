@@ -81,11 +81,6 @@ endif
 " containing a <pattern> directory, or an empty string if no such directory
 " is found.
 function! s:FindInCurrentPath(pattern)
-  " Don't try to change directories when on a virtual filesystem (netrw, fugitive,...).
-  if match(expand('%:p'), '^\w\+://.*') != -1
-    return ""
-  endif
-
   let dir_current_file = fnameescape(expand("%:p:h"))
   let pattern_dir = ""
 
@@ -108,6 +103,11 @@ endfunction
 " Returns the root directory for the current file based on the list of
 " known SCM directory names.
 function! s:FindRootDirectory()
+  " Don't try to change directories when on a virtual filesystem (netrw, fugitive,...).
+  if match(expand('%:p'), '^\w\+://.*') != -1
+    return ""
+  endif
+
   for pattern in g:rooter_patterns
     let result = s:FindInCurrentPath(pattern)
     if !empty(result)
