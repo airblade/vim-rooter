@@ -52,11 +52,8 @@ if exists('g:loaded_rooter') || &cp
 endif
 let g:loaded_rooter = 1
 
+" User configuration {{{
 
-"
-" User configuration
-"
-"
 if !exists('g:rooter_use_lcd')
   let g:rooter_use_lcd = 0
 endif
@@ -65,9 +62,9 @@ if !exists('g:rooter_patterns')
   let g:rooter_patterns = ['.git/', '.git', '_darcs/', '.hg/', '.bzr/', '.svn/']
 endif
 
-"
-" Utility
-"
+" }}}
+
+" Utility {{{
 
 function! s:IsVirtualFileSystem()
   return match(expand('%:p'), '^\w\+://.*') != -1
@@ -86,14 +83,13 @@ function! s:IsDirectory(pattern)
   return stridx(a:pattern, '/') != -1
 endfunction
 
+" }}}
 
-"
-" Functions
-"
+" Core logic {{{
 
-" Find the root directory of the current file, i.e the closest parent directory
-" containing a <pattern> directory, or an empty string if no such directory
-" is found.
+" Returns the project root directory of the current file, i.e the closest parent
+" directory containing the given directory or file, or an empty string if no
+" such directory or file is found.
 function! s:FindInCurrentPath(pattern)
   let dir_current_file = fnameescape(expand('%:p:h'))
   let project_dir = ''
@@ -109,9 +105,7 @@ function! s:FindInCurrentPath(pattern)
   endif
 
   let match = fnamemodify(match, ':p')
-  let project_dir = substitute(match, a:pattern . '$', '', '')
-
-  return project_dir
+  return substitute(match, a:pattern . '$', '', '')
 endfunction
 
 " Returns the root directory for the current file based on the list of
@@ -141,19 +135,15 @@ function! s:ChangeToRootDirectory()
   endif
 endfunction
 
-"
-" Mappings
-"
+" }}}
+
+" Mappings and commands {{{
 
 if !hasmapto("<Plug>RooterChangeToRootDirectory")
   map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
 endif
 noremap <unique> <script> <Plug>RooterChangeToRootDirectory <SID>ChangeToRootDirectory
 noremap <SID>ChangeToRootDirectory :call <SID>ChangeToRootDirectory()<CR>
-
-"
-" Commands
-"
 
 command! Rooter :call <SID>ChangeToRootDirectory()
 if !exists('g:rooter_manual_only')
@@ -169,4 +159,6 @@ if !exists('g:rooter_manual_only')
   augroup END
 endif
 
-" vim:set ft=vim sw=2 sts=2 et:
+" }}}
+
+" vim:set ft=vim sw=2 sts=2  fdm=marker et:
