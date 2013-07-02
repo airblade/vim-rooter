@@ -119,6 +119,10 @@ function! s:ChangeToRootDirectory()
     return ""
   endif
 
+  if empty(&buftype)
+    return ''
+  endif
+
   let root_dir = s:FindRootDirectory()
   if !empty(root_dir)
     if exists('+autochdir')
