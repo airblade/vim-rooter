@@ -106,21 +106,15 @@ function! s:FindInCurrentPath(pattern)
 
   if s:IsDirectory(a:pattern)
     let match = finddir(a:pattern, dir_current_file . ';')
-
     if empty(match)
       return ''
     endif
-
-    " `match' always ends with '/' or '\' depending on platform hence the
-    " double ':h' is required to strip just the last component of path
     return fnamemodify(match, ':p:h:h')
   else
     let match = findfile(a:pattern, dir_current_file . ';')
-
     if empty(match)
       return ''
     endif
-
     return fnamemodify(match, ':p:h')
   endif
 endfunction
