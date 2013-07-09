@@ -103,20 +103,26 @@ endfunction
 " such directory or file is found.
 function! s:FindInCurrentPath(pattern)
   let dir_current_file = fnameescape(expand('%:p:h'))
-  let project_dir = ''
 
   if s:IsDirectory(a:pattern)
     let match = finddir(a:pattern, dir_current_file . ';')
+
+    if empty(match)
+      return ''
+    endif
+
+    " `match' always ends with '/' or '\' depending on platform hence the
+    " double ':h' is required to strip just the last component of path
+    return fnamemodify(match, ':p:h:h')
   else
     let match = findfile(a:pattern, dir_current_file . ';')
-  endif
 
-  if empty(match)
-    return ''
-  endif
+    if empty(match)
+      return ''
+    endif
 
-  let match = fnamemodify(match, ':p')
-  return substitute(match, a:pattern . '$', '', '')
+    return fnamemodify(match, ':p:h')
+  endif
 endfunction
 
 " Returns the root directory for the current file based on the list of
