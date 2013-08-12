@@ -66,7 +66,7 @@ if !exists('g:rooter_use_lcd')
 endif
 
 if !exists('g:rooter_patterns')
-  let g:rooter_patterns = ['.git/', '.git', '_darcs/', '.hg/', '.bzr/', '.svn/']
+  let g:rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
 endif
 
 if !exists('g:rooter_change_directory_for_non_project_files')
