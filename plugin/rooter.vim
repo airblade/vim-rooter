@@ -155,7 +155,7 @@ endfunction
 
 " Mappings and commands {{{
 
-if !hasmapto("<Plug>RooterChangeToRootDirectory")
+if !exists("g:rooter_disable_mapping") && !hasmapto("<Plug>RooterChangeToRootDirectory")
   map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
 endif
 noremap <unique> <script> <Plug>RooterChangeToRootDirectory <SID>ChangeToRootDirectory
