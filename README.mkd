@@ -27,6 +27,10 @@ You can change the manual-invocation mapping by adding this to your `.vimrc`:
 
 where `<Leader>foo` is the mapping you want.
 
+To prevent vim-rooter from creating a mapping, do this:
+
+    let g:rooter_disable_map = 1
+
 You can change the file extensions which trigger vim-rooter with autocommands
 in `~/.vim/after/plugin/vim-rooter.vim`.  You'll need to create this file, and
 possibly the directories, yourself.
