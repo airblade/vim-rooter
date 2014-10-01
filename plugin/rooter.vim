@@ -157,6 +157,7 @@ endfunction
 
 if !hasmapto("<Plug>RooterChangeToRootDirectory")
   map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
+  sunmap <silent> <unique> <Leader>cd
 endif
 noremap <unique> <script> <Plug>RooterChangeToRootDirectory <SID>ChangeToRootDirectory
 noremap <SID>ChangeToRootDirectory :call <SID>ChangeToRootDirectory()<CR>
