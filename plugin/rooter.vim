@@ -169,7 +169,7 @@ if !exists('g:rooter_manual_only')
     autocmd BufEnter *.rb,*.py,
           \*.html,*.haml,*.erb,
           \*.css,*.scss,*.sass,*.less,
-          \*.js,*.rjs,*.coffee,
+          \*.js,*.rjs,*.coffee,*.java,
           \*.php,*.xml,*.yaml,*.yml,
           \*.markdown,*.md
           \ :Rooter
