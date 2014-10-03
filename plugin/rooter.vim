@@ -69,6 +69,10 @@ if !exists('g:rooter_patterns')
   let g:rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
 endif
 
+if !exists('g:rooter_autocmd_patterns')
+  let g:rooter_autocmd_patterns = '*'
+endif
+
 if !exists('g:rooter_change_directory_for_non_project_files')
   let g:rooter_change_directory_for_non_project_files = 0
 endif
@@ -166,13 +170,7 @@ command! Rooter :call <SID>ChangeToRootDirectory()
 if !exists('g:rooter_manual_only')
   augroup rooter
     autocmd!
-    autocmd BufEnter *.rb,*.py,
-          \*.html,*.haml,*.erb,
-          \*.css,*.scss,*.sass,*.less,
-          \*.js,*.rjs,*.coffee,
-          \*.php,*.xml,*.yaml,*.yml,
-          \*.markdown,*.md
-          \ :Rooter
+    exe "autocmd BufEnter " . g:rooter_autocmd_patterns . " :Rooter"
   augroup END
 endif
 
