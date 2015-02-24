@@ -40,7 +40,9 @@ endfunction
 
 function! s:ChangeDirectory(directory)
   let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
-  execute ':' . cmd . ' ' . fnameescape(a:directory)
+  let dir = fnameescape(a:directory)
+  execute ':' . cmd . ' ' . dir
+  echo dir
 endfunction
 
 function! s:IsDirectory(pattern)
@@ -95,6 +97,8 @@ function! s:ChangeToRootDirectory()
   if empty(root_dir)
     if g:rooter_change_directory_for_non_project_files
       call s:ChangeDirectory(expand('%:p:h'))
+    else
+      echo "No root directory found."
     endif
   else
     if exists('+autochdir')
