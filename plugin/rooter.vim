@@ -45,10 +45,12 @@ function! s:IsNormalFile()
 endfunction
 
 function! s:ChangeDirectory(directory)
-  let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
-  let dir = fnameescape(a:directory)
-  execute ':' . cmd . ' ' . dir
-  echo dir
+  if a:directory !=# getcwd()
+    let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
+    let dir = fnameescape(a:directory)
+    execute ':' . cmd . ' ' . dir
+    echo dir
+  endif
 endfunction
 
 function! s:IsDirectory(pattern)
