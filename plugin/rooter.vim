@@ -104,14 +104,17 @@ function! s:ChangeToRootDirectory()
   let root_dir = getbufvar('%', 'rootDir')
   if empty(root_dir)
     let root_dir = s:FindRootDirectory()
-    if empty(root_dir)
-      if g:rooter_change_directory_for_non_project_files
-        call s:ChangeDirectory(expand('%:p:h'))
-      endif
-    else
+    if !empty(root_dir)
       call setbufvar('%', 'rootDir', root_dir)
-      call s:ChangeDirectory(root_dir)
     endif
+  endif
+
+  if empty(root_dir)
+    if g:rooter_change_directory_for_non_project_files
+      call s:ChangeDirectory(expand('%:p:h'))
+    endif
+  else
+    call s:ChangeDirectory(root_dir)
   endif
 endfunction
 
