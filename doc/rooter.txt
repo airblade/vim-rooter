@@ -39,6 +39,7 @@ You can always invoke vim-rooter manually with <Leader>cd.
 ==============================================================================
 Configuration                                           *rooter-configuration*
                                                         *g:rooter_manual_only*
+                                                        *g:rooter_disable_map*
                                                            *g:rooter_patterns*
                                                    *g:rooter_autocmd_patterns*
                                                             *g:rooter_use_lcd*
@@ -49,6 +50,10 @@ You can change the manual-invocation mapping by adding this to your .vimrc:
 map <silent> <unique> <Leader>foo <Plug>RooterChangeToRootDirectory
 where <Leader>foo is the mapping you want.
 
+To prevent vim-rooter from creating a mapping, do this: >
+
+    let g:rooter_disable_map = 1
+<
 You can change the file extensions which trigger vim-rooter by specifying a
 a comma separated list.
 >

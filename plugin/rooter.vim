@@ -122,7 +122,7 @@ endfunction
 
 " Mappings and commands {{{
 
-if !hasmapto("<Plug>RooterChangeToRootDirectory")
+if !exists("g:rooter_disable_map") && !hasmapto("<Plug>RooterChangeToRootDirectory")
   map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
   sunmap <silent> <unique> <Leader>cd
 endif

@@ -25,6 +25,10 @@ You can change the manual-invocation mapping by adding this to your `.vimrc`:
 
 where `<Leader>foo` is the mapping you want.
 
+To prevent vim-rooter from creating a mapping, do this:
+
+    let g:rooter_disable_map = 1
+
 By default all files trigger vim-rooter.  You can restrict the files by passing a comma separated list of extensions like this:
 
     let g:rooter_autocmd_patterns = '*.rb,*.haml,*.js'
