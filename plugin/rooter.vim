@@ -8,6 +8,12 @@ if exists('g:loaded_rooter') || &cp
 endif
 let g:loaded_rooter = 1
 
+" Turn off autochdir.  If you're using this plugin then you don't want it.
+if exists('+autochdir') && &autochdir
+  set noautochdir
+  echom 'vim-rooter: set noautochdir'
+endif
+
 " User configuration {{{
 
 if !exists('g:rooter_use_lcd')
@@ -99,9 +105,6 @@ function! s:ChangeToRootDirectory()
       call s:ChangeDirectory(expand('%:p:h'))
     endif
   else
-    if exists('+autochdir')
-      set noautochdir
-    endif
     call s:ChangeDirectory(root_dir)
   endif
 endfunction
