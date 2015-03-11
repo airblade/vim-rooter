@@ -40,7 +40,9 @@ endfunction
 
 function! s:ChangeDirectory(directory)
   let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
-  execute ':' . cmd . ' ' . fnameescape(a:directory)
+  let dir = fnameescape(a:directory)
+  execute ':' . cmd . ' ' . dir
+  echo dir
 endfunction
 
 function! s:IsDirectory(pattern)
