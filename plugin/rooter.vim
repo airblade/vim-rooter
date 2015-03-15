@@ -32,6 +32,10 @@ if !exists('g:rooter_change_directory_for_non_project_files')
   let g:rooter_change_directory_for_non_project_files = 0
 endif
 
+if !exists('g:rooter_silent_chdir')
+  let g:rooter_silent_chdir = 0
+endif
+
 " }}}
 
 " Utility {{{
@@ -49,7 +53,9 @@ function! s:ChangeDirectory(directory)
     let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
     let dir = fnameescape(a:directory)
     execute ':' . cmd . ' ' . dir
-    echo dir
+    if !g:rooter_silent_chdir
+      echo dir
+    endif
   endif
 endfunction
 
@@ -122,7 +128,7 @@ endfunction
 
 " Mappings and commands {{{
 
-if !get(g:, "rooter_disable_map", 0) && !hasmapto("<Plug>RooterChangeToRootDirectory")
+if !get(g:, 'rooter_disable_map', 0) && !hasmapto('<Plug>RooterChangeToRootDirectory')
   map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
   sunmap <silent> <unique> <Leader>cd
 endif
@@ -133,7 +139,7 @@ command! Rooter :call <SID>ChangeToRootDirectory()
 if !exists('g:rooter_manual_only')
   augroup rooter
     autocmd!
-    exe "autocmd BufEnter " . g:rooter_autocmd_patterns . " :Rooter"
+    exe 'autocmd BufEnter ' . g:rooter_autocmd_patterns . ' :Rooter'
   augroup END
 endif
 
