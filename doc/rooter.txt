@@ -67,22 +67,32 @@ You can set your own directory and file patterns like this: >
 
     let g:rooter_patterns = ['Rakefile', '.git/']
 <
-Vim-rooter checks the patterns in the order given. So to work correctly with
-git submodules you should have .git before .git/.
+Vim-rooter checks the patterns depth-first in the order given. So to work
+correctly with git submodules you should have `.git` before `.git/`. All
+directories should have a trailing slash. >
+<
+Setting your own patterns overwrites the defaults. You can use >
 
-Setting your own patterns overwrites the defaults. Directories should have a
-trailing slash.
+    let g:rooter_patterns = g:rooter_patterns + [ 'foo' ]
+
+to append to the default patterns.
 
 You can have vim-rooter locally change directory (|:lcd|) instead of changing
 directory (|:cd|) by adding this to your .vimrc: >
 
     let g:rooter_use_lcd = 1
-<
+
 When vim-rooter encounters a non-project file, it won't change directory by
 default. If you would instead like vim-rooter to change to the file's
 directory, do this: >
 
     let g:rooter_change_directory_for_non_project_files = 1
+<
+This makes vim-rooter behave similarly to 'autochdir' for non-project files. >
+<
+If you don't want vim-rooter to echo the project directory, try this: >
+
+    let g:rooter_silent_chdir = 1
 <
 ==============================================================================
 Installation                                             *rooter-installation*
