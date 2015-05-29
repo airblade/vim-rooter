@@ -14,6 +14,8 @@ you like.
 By default you don't need to do anything: vim-rooter will change the working
 directory automatically and echo the new working directory.
 
+vim-rooter will unset `&autochdir` if it's set because the plugin supersedes the options' functionality.
+
 You can always invoke vim-rooter manually with `<Leader>cd`.
 
 
