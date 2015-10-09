@@ -40,7 +40,7 @@ endif
 " Utility {{{
 
 function! s:IsVirtualFileSystem()
-  return match(expand('%:p'), '^\w\+://.*') != -1
+  return match(expand('%:p'), '^\w\+:[\/][\/].*') != -1
 endfunction
 
 function! s:IsNormalFile()
