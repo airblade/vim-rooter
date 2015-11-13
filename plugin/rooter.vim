@@ -97,9 +97,8 @@ function! s:InspectFileSystemForRootDirectory()
   return ''
 endfunction
 
-" Returns the root directory for the current file based on the list of
-" known SCM directory names.
-function! s:FindRootDirectory()
+" Returns the root directory for the current file based on the list of known SCM patterns.
+function! FindRootDirectory()
   let root_dir = getbufvar('%', 'rootDir')
   if empty(root_dir)
     let root_dir = s:InspectFileSystemForRootDirectory()
@@ -117,7 +116,7 @@ function! s:ChangeToRootDirectory()
     return
   endif
 
-  let root_dir = s:FindRootDirectory()
+  let root_dir = FindRootDirectory()
 
   if empty(root_dir)
     if g:rooter_change_directory_for_non_project_files

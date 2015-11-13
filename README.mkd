@@ -19,6 +19,18 @@ vim-rooter will unset `&autochdir` if it's set because the plugin supersedes the
 You can always invoke vim-rooter manually with `<Leader>cd`.
 
 
+## Using root-finding functionality in other scripts
+
+The public function `FindRootDirectory()` returns the absolute path to the root directory as a string, if a root directory is found, or an empty string otherwise.
+
+If that's all you need from this plugin, you can turn off the rest of its behaviour like this:
+
+```viml
+let g:rooter_manual_only = 1
+let g:rooter_disable_map = 1
+```
+
+
 ## Configuration
 
 You can change the manual-invocation mapping by adding this to your `.vimrc`:
