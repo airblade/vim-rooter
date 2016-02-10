@@ -97,6 +97,14 @@ If you don't want vim-rooter to echo the project directory, try this:
 let g:rooter_silent_chdir = 1
 ```
 
+By default, vim-rooter doesn't resolve symbolic links, so it will look for the
+project root from a link's location. If you want it to look from the location
+of a link's target instead, you can use:
+
+```viml
+let g:rooter_resolve_links = 1
+```
+
 ## Installation
 
 Install into `~/.vim/plugin/rooter.vim` or, if you're using Pathogen, into

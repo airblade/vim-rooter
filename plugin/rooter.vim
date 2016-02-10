@@ -35,6 +35,10 @@ if !exists('g:rooter_silent_chdir')
   let g:rooter_silent_chdir = 0
 endif
 
+if !exists('g:rooter_resolve_links')
+  let g:rooter_resolve_links = 0
+endif
+
 " }}}
 
 " Utility {{{
@@ -70,7 +74,11 @@ endfunction
 " directory containing the given directory or file, or an empty string if no
 " such directory or file is found.
 function! s:FindInCurrentPath(pattern)
-  let dir_current_file = fnameescape(expand('%:p:h'))
+  let current_file = expand('%:p')
+  if g:rooter_resolve_links
+    let current_file = resolve(current_file)
+  endif
+  let dir_current_file = fnameescape(fnamemodify(current_file, ':h'))
 
   if s:IsDirectory(a:pattern)
     let match = finddir(a:pattern, dir_current_file . ';')
