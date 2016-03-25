@@ -39,6 +39,14 @@ if !exists('g:rooter_resolve_links')
   let g:rooter_resolve_links = 0
 endif
 
+if !exists('g:rooter_chdir_makefile')
+  let g:rooter_chdir_makefile = 0
+endif
+
+if !exists('g:rooter_makefile_patterns')
+  let g:rooter_makefile_patterns = ['Makefile']
+endif
+
 " }}}
 
 " Utility {{{
@@ -105,6 +113,25 @@ function! s:InspectFileSystemForRootDirectory()
   return ''
 endfunction
 
+function! s:InspectFileSystemForMakefile()
+  let curdir = getcwd()
+  let root_dir = getbufvar('%', 'rootDir')
+  let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
+  while curdir != '/' && curdir != root_dir
+    for file_or_dir in split(globpath('.', '*'), '\n')
+      let curfile = fnameescape(fnamemodify(file_or_dir, ':t'))
+      for makepattern in g:rooter_makefile_patterns
+        if makepattern =~ curfile
+          return curdir
+        endif
+      endfor
+    endfor
+    execute ':' . cmd . ' ../'
+    let curdir = getcwd()
+  endwhile
+  return root_dir
+endfunction
+
 " Returns the root directory for the current file based on the list of known SCM patterns.
 function! FindRootDirectory()
   let root_dir = getbufvar('%', 'rootDir')
@@ -112,6 +139,11 @@ function! FindRootDirectory()
     let root_dir = s:InspectFileSystemForRootDirectory()
     if !empty(root_dir)
       call setbufvar('%', 'rootDir', root_dir)
+    endif
+    " if we only need to go up to the makefile, recompute
+    " FIXME this is redundant, we traverse the path twice
+    if g:rooter_chdir_makefile
+      let root_dir = s:InspectFileSystemForMakefile()
     endif
   endif
   return root_dir

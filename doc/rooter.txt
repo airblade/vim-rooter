@@ -60,6 +60,7 @@ Configuration                                           *rooter-configuration*
                                                    *g:rooter_autocmd_patterns*
                                                             *g:rooter_use_lcd*
                              *g:rooter_change_directory_for_non_project_files*
+                                                     *g:rooter_chdir_makefile*
 
 You can change the manual-invocation mapping by adding this to your |vimrc|: >
 
@@ -117,6 +118,16 @@ of a link's target instead, you can use: >
 
     let g:rooter_resolve_links = 1
 <
+If you want vim-rooter to not change to your root-directory but instead change
+to the first directory in your path containing a Makefile, you can use: >
+
+    let g:rooter_chdir_makefile = 1
+<
+Specifying your own Makefile formats overwrites the defaults. You can use >
+
+    let g:rooter_patterns = g:rooter_makefile_patterns + [ 'hello.mk' ]
+<
+to append to the default patterns for makefile scripts.
 
 ==============================================================================
 Installation                                             *rooter-installation*
