@@ -28,7 +28,7 @@ if !exists('g:rooter_autocmd_patterns')
 endif
 
 if !exists('g:rooter_change_directory_for_non_project_files')
-  let g:rooter_change_directory_for_non_project_files = 0
+  let g:rooter_change_directory_for_non_project_files = ''
 endif
 
 if !exists('g:rooter_silent_chdir')
@@ -127,8 +127,12 @@ function! s:ChangeToRootDirectory()
   let root_dir = FindRootDirectory()
 
   if empty(root_dir)
-    if g:rooter_change_directory_for_non_project_files
+    " Test against 1 for backwards compatibility
+    if g:rooter_change_directory_for_non_project_files == 1 ||
+          \ g:rooter_change_directory_for_non_project_files == 'current'
       call s:ChangeDirectory(expand('%:p:h'))
+    elseif g:rooter_change_directory_for_non_project_files == 'home'
+      call s:ChangeDirectory($HOME)
     endif
   else
     call s:ChangeDirectory(root_dir)

@@ -103,10 +103,14 @@ When vim-rooter encounters a non-project file, it won't change directory by
 default. If you would instead like vim-rooter to change to the file's
 directory, do this: >
 
-    let g:rooter_change_directory_for_non_project_files = 1
+    let g:rooter_change_directory_for_non_project_files = 'current'
 <
 This makes vim-rooter behave similarly to 'autochdir' for non-project files. >
-<
+
+If you would like vim-rooter to change to your home directory: >
+
+    let g:rooter_change_directory_for_non_project_files = 'home'
+
 If you don't want vim-rooter to echo the project directory, try this: >
 
     let g:rooter_silent_chdir = 1
