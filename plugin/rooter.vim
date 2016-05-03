@@ -120,7 +120,7 @@ endfunction
 " Changes the current working directory to the current file's
 " root directory.
 function! s:ChangeToRootDirectory()
-  if s:IsVirtualFileSystem() || !s:IsNormalFile()
+  if s:IsVirtualFileSystem() || !(s:IsNormalFile() || isdirectory(expand('%')))
     return
   endif
 
