@@ -1,6 +1,6 @@
 " Vim plugin to change the working directory to the project root.
 "
-" Copyright 2010-2014 Andrew Stewart, <boss@airbladesoftware.com>
+" Copyright 2010-2016 Andrew Stewart, <boss@airbladesoftware.com>
 " Released under the MIT licence.
 
 if exists('g:loaded_rooter') || &cp
@@ -8,12 +8,9 @@ if exists('g:loaded_rooter') || &cp
 endif
 let g:loaded_rooter = 1
 
-" Turn off autochdir.  If you're using this plugin then you don't want it.
 if exists('+autochdir') && &autochdir
   set noautochdir
 endif
-
-" User configuration {{{
 
 if !exists('g:rooter_use_lcd')
   let g:rooter_use_lcd = 0
@@ -23,8 +20,8 @@ if !exists('g:rooter_patterns')
   let g:rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
 endif
 
-if !exists('g:rooter_autocmd_patterns')
-  let g:rooter_autocmd_patterns = '*'
+if !exists('g:rooter_targets')
+  let g:rooter_targets = '/,*'
 endif
 
 if !exists('g:rooter_change_directory_for_non_project_files')
@@ -39,25 +36,12 @@ if !exists('g:rooter_resolve_links')
   let g:rooter_resolve_links = 0
 endif
 
-" }}}
-
-" Utility {{{
-
-function! s:IsVirtualFileSystem()
-  return match(expand('%:p'), '^\w\+:[\/][\/].*') != -1
-endfunction
-
-function! s:IsNormalFile()
-  return empty(&buftype)
-endfunction
-
 function! s:ChangeDirectory(directory)
   if a:directory !=# getcwd()
     let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
-    let dir = fnameescape(a:directory)
-    execute ':' . cmd . ' ' . dir
+    execute ':'.cmd a:directory
     if !g:rooter_silent_chdir
-      echo dir
+      echo a:directory
     endif
   endif
 endfunction
@@ -66,38 +50,45 @@ function! s:IsDirectory(pattern)
   return stridx(a:pattern, '/') != -1
 endfunction
 
-" }}}
+function! s:ChangeDirectoryForBuffer()
+  let patterns = split(g:rooter_targets, ',')
 
-" Core logic {{{
-
-" Returns the project root directory of the current file, i.e the closest parent
-" directory containing the given directory or file, or an empty string if no
-" such directory or file is found.
-function! s:FindInCurrentPath(pattern)
-  let current_file = expand('%:p')
-  if g:rooter_resolve_links
-    let current_file = resolve(current_file)
+  if isdirectory(s:fd)
+    return index(patterns, '/') != -1
   endif
-  let dir_current_file = fnameescape(fnamemodify(current_file, ':h'))
+
+  if filereadable(s:fd) && empty(&buftype)
+    for p in patterns
+      if p !=# '/' && s:fd =~# glob2regpat(p)
+        return 1
+      endif
+    endfor
+  endif
+
+  return 0
+endfunction
+
+function! s:FindAncestor(pattern)
+  if s:IsDirectory(a:pattern)
+    let match = finddir(a:pattern, s:fd.';')
+  else
+    let match = findfile(a:pattern, s:fd.';')
+  endif
+
+  if empty(match)
+    return ''
+  endif
 
   if s:IsDirectory(a:pattern)
-    let match = finddir(a:pattern, dir_current_file . ';')
-    if empty(match)
-      return ''
-    endif
     return fnamemodify(match, ':p:h:h')
   else
-    let match = findfile(a:pattern, dir_current_file . ';')
-    if empty(match)
-      return ''
-    endif
     return fnamemodify(match, ':p:h')
   endif
 endfunction
 
-function! s:InspectFileSystemForRootDirectory()
+function! s:SearchForRootDirectory()
   for pattern in g:rooter_patterns
-    let result = s:FindInCurrentPath(pattern)
+    let result = s:FindAncestor(pattern)
     if !empty(result)
       return result
     endif
@@ -105,11 +96,10 @@ function! s:InspectFileSystemForRootDirectory()
   return ''
 endfunction
 
-" Returns the root directory for the current file based on the list of known SCM patterns.
-function! FindRootDirectory()
+function! s:RootDirectory()
   let root_dir = getbufvar('%', 'rootDir')
   if empty(root_dir)
-    let root_dir = s:InspectFileSystemForRootDirectory()
+    let root_dir = s:SearchForRootDirectory()
     if !empty(root_dir)
       call setbufvar('%', 'rootDir', root_dir)
     endif
@@ -117,21 +107,24 @@ function! FindRootDirectory()
   return root_dir
 endfunction
 
-" Changes the current working directory to the current file's
-" root directory.
 function! s:ChangeToRootDirectory()
-  if s:IsVirtualFileSystem() || !(s:IsNormalFile() || isdirectory(expand('%')))
+  let s:fd = expand('%:p')
+
+  if g:rooter_resolve_links
+    let s:fd = resolve(fd)
+  endif
+
+  if !s:ChangeDirectoryForBuffer()
     return
   endif
 
-  let root_dir = FindRootDirectory()
-
+  let root_dir = s:RootDirectory()
   if empty(root_dir)
     " Test against 1 for backwards compatibility
     if g:rooter_change_directory_for_non_project_files == 1 ||
-          \ g:rooter_change_directory_for_non_project_files == 'current'
-      call s:ChangeDirectory(expand('%:p:h'))
-    elseif g:rooter_change_directory_for_non_project_files == 'home'
+          \ g:rooter_change_directory_for_non_project_files ==? 'current'
+      call s:ChangeDirectory(fnamemodify(s:fd, ':h'))
+    elseif g:rooter_change_directory_for_non_project_files ==? 'home'
       call s:ChangeDirectory($HOME)
     endif
   else
@@ -139,25 +132,29 @@ function! s:ChangeToRootDirectory()
   endif
 endfunction
 
-" }}}
+" For third-parties.  Not used by plugin.
+function! FindRootDirectory()
+  let s:fd = expand('%:p')
 
-" Mappings and commands {{{
+  if g:rooter_resolve_links
+    let s:fd = resolve(fd)
+  endif
 
-if !get(g:, 'rooter_disable_map', 0) && !hasmapto('<Plug>RooterChangeToRootDirectory')
-  map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
-  sunmap <silent> <unique> <Leader>cd
-endif
-noremap <unique> <script> <Plug>RooterChangeToRootDirectory <SID>ChangeToRootDirectory
-noremap <SID>ChangeToRootDirectory :call <SID>ChangeToRootDirectory()<CR>
+  if !s:ChangeDirectoryForBuffer()
+    return ''
+  endif
+
+  return s:RootDirectory()
+endfunction
 
 command! Rooter :call <SID>ChangeToRootDirectory()
+
 if !exists('g:rooter_manual_only')
   augroup rooter
     autocmd!
-    exe 'autocmd BufEnter ' . g:rooter_autocmd_patterns . ' :Rooter'
+    autocmd BufEnter * :Rooter
   augroup END
 endif
 
-" }}}
+" vim:set ft=vim sw=2 sts=2 et:
 
-" vim:set ft=vim sw=2 sts=2  fdm=marker et:

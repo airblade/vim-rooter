@@ -1,117 +1,106 @@
 # Rooter
 
-Rooter is a Vim plugin which changes the working directory to the project root
-when you open a file.
+Rooter changes the working directory to the project root when you open a file or directory.
 
-The project root is identified by the presence of known directory, such as a VCS
-directory, or file, such as a Rakefile. Out of the box it looks for git, darcs,
-mercurial, bazaar, and subversion, but you can configure it to look for anything
-you like.
+The project root is identified by the presence of a known directory, such as a VCS directory, or file, such as a `Rakefile`.  Out of the box it knows about git, darcs, mercurial, bazaar, and subversion, but you can configure it to look for anything.
 
 
 ## Use
 
-By default you don't need to do anything: vim-rooter will change the working
-directory automatically and echo the new working directory.
+By default you don't need to do anything: vim-rooter will change the working directory automatically and echo the new working directory.
 
-vim-rooter will unset `&autochdir` if it's set because the plugin supersedes the option's functionality.
+You can turn this off (see below) and use the `:Rooter` command to invoke vim-rooter manually.
 
-You can always invoke vim-rooter manually with `<Leader>cd`.
+
+## Non-project files
+
+There are three options for non-project files/directories:
+
+- Don't change directory (default).
+
+    ```viml
+    let g:rooter_change_directory_for_non_project_files = ''
+    ```
+
+- Change to file's directory (similar to `autochdir`).
+
+    ```viml
+    let g:rooter_change_directory_for_non_project_files = 'current'
+    ```
+
+- Change to home directory.
+
+    ```viml
+    let g:rooter_change_directory_for_non_project_files = 'home'
+    ```
+
+
+## Configuration
+
+vim-rooter will unset `&autochdir` if it's set.
+
+By default all files and directories trigger vim-rooter.  Configure a comma separated list of file patterns to specify which files trigger vim-rooter.  Include `/` to trigger vim-rooter on directories.
+
+```viml
+" directories and all files (default)
+let g:rooter_targets = '/,*'
+
+" ignore directories; all files
+let g:rooter_targets = '*'
+
+" ignore directories; yaml files
+let g:rooter_targets = '*.yml,*.yaml'
+
+" directories and yaml files
+let g:rooter_targets = '/,*.yml,*.yaml'
+```
+
+To stop vim-rooter changing directory automatically:
+
+```viml
+let g:rooter_manual_only = 1
+```
+
+To specify how to identify a project's root directory:
+
+```viml
+let g:rooter_patterns = ['Rakefile', '.git/']
+```
+
+Vim-rooter checks the patterns depth (height?) first.  Directories must have a trailing slash.  To work correctly with git submodules place `.git` before `.git/`.
+
+To change directory for the current window only (`:lcd`):
+
+```viml
+let g:rooter_use_lcd = 1
+```
+
+To stop vim-rooter echoing the project directory:
+
+```viml
+let g:rooter_silent_chdir = 1
+```
+
+By default vim-rooter doesn't resolve symbolic links.  To resolve links:
+
+```viml
+let g:rooter_resolve_links = 1
+```
 
 
 ## Using root-finding functionality in other scripts
 
 The public function `FindRootDirectory()` returns the absolute path to the root directory as a string, if a root directory is found, or an empty string otherwise.
 
-If that's all you need from this plugin, you can turn off the rest of its behaviour like this:
-
-```viml
-let g:rooter_manual_only = 1
-let g:rooter_disable_map = 1
-```
-
-
-## Configuration
-
-You can change the manual-invocation mapping by adding this to your `.vimrc`:
-
-```viml
-map <silent> <unique> <Leader>foo <Plug>RooterChangeToRootDirectory
-```
-
-where `<Leader>foo` is the mapping you want.
-
-To prevent vim-rooter from creating a mapping, do this:
-
-```viml
-let g:rooter_disable_map = 1
-```
-
-By default all files trigger vim-rooter. You can restrict the files by passing a comma separated list of extensions, like this:
-
-```viml
-let g:rooter_autocmd_patterns = '*.rb,*.haml,*.js'
-```
-
-To stop vim-rooter changing directory automatically, add this to your `.vimrc`:
+If that's all you need you can turn off the directory-changing behaviour with:
 
 ```viml
 let g:rooter_manual_only = 1
 ```
 
-You can set your own directory and file patterns like this:
-
-```viml
-let g:rooter_patterns = ['Rakefile', '.git/']
-```
-
-Vim-rooter checks the patterns depth-first in the order given. So to work correctly with git submodules you should have `.git` before `.git/`. All directories should have a trailing slash.
-
-Setting your own patterns overwrites the defaults. You can use
-
-```viml
-let g:rooter_patterns = g:rooter_patterns + [ 'foo' ]
-```
-
-to append to the default patterns.
-
-You can have vim-rooter locally change directory (`:lcd`) instead of
-changing directory (`:cd`) by adding this to your `.vimrc`:
-
-```viml
-let g:rooter_use_lcd = 1
-```
-
-When vim-rooter encounters a non-project file, it won't change directory by default.
-If you would instead like vim-rooter to change directory, it can either change to the file's directory:
-
-```viml
-let g:rooter_change_directory_for_non_project_files = 'current'
-```
-
-(This makes vim-rooter behave similarly to `autochdir` for non-project files.)
-
-...or to your home directory:
-
-```viml
-let g:rooter_change_directory_for_non_project_files = 'home'
-```
-
-If you don't want vim-rooter to echo the project directory, try this:
-
-```viml
-let g:rooter_silent_chdir = 1
-```
-
-By default, vim-rooter doesn't resolve symbolic links, so it will look for the
-project root from a link's location. If you want it to look from the location
-of a link's target instead, you can use:
-
-```viml
-let g:rooter_resolve_links = 1
-```
 
 ## Installation
 
 Install into `~/.vim/plugin/rooter.vim` or, if you're using Pathogen, into
 `~/.vim/bundle/rooter.vim`.
+
