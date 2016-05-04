@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+VIM="/Applications/MacVim.app/Contents/MacOS/Vim -v"
+
+[ -f messages.log ] && rm messages.log
+[ -f test.log ] && rm test.log
+
+# Set g:rooter_targets to ignore vim files so that loading the test scripts
+# themselves doesn't trigger directory changes.
+$VIM -u NONE -U NONE -N                \
+  --cmd 'set rtp+=../'                 \
+  --cmd 'let g:rooter_targets="*.txt"' \
+  --cmd 'source ../plugin/rooter.vim'  \
+  -S runner.vim                        \
+  test_*.vim                           \
+  $*
+
+cat messages.log
+
+if grep -q FAILED messages.log; then
+  cat test.log
+  exit 1
+else
+  rm messages.log
+  [ -f test.log ] && rm test.log
+  exit 0
+fi
+
