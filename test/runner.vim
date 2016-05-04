@@ -13,7 +13,8 @@ function RunTest(test)
   try
     execute 'call '.a:test
   catch
-    call add(v:errors, 'Caught exception: '.v:exception.' @ '.v:throwpoint)
+    call add(v:errors, 'Exception: '.v:exception.' @ '.v:throwpoint)
+    let s:errored = 1
   endtry
 
   if exists("*TearDown")
@@ -26,8 +27,10 @@ function Log(msg)
 endfunction
 
 let g:testname = expand('%')
+let s:errored = 0
 let s:done = 0
 let s:fail = 0
+let s:errors = 0
 let s:messages = []
 
 call Log(g:testname.':')
@@ -36,9 +39,8 @@ call Log(g:testname.':')
 try
   source %
 catch
-  " TODO distinguish errors and failures
-  let s:fail += 1
-  call Log('Caught exception: '.v:exception.' @ '.v:throwpoint)
+  let s:errors += 1
+  call Log('Exception: '.v:exception.' @ '.v:throwpoint)
 endtry
 
 " Locate the test functions.
@@ -63,16 +65,22 @@ for test in s:tests
   if len(v:errors) == 0
     call Log('ok     - '.friendly_name)
   else
-    let s:fail += 1
+    if s:errored
+      let s:errors += 1
+      let s:errored = 0
+    else
+      let s:fail += 1
+    endif
     call Log('not ok - '.friendly_name)
-    call Log(join(map(v:errors, '"# ".v:val'), "\n"))
+    call Log(join(map(v:errors, '"       # ".v:val'), "\n"))
     let v:errors = []
   endif
 endfor
 
 let summary = [
-      \ s:done.(s:done == 1 ? ' test'    : ' tests'),
-      \ s:fail.(s:fail == 1 ? ' failure' : ' failures'),
+      \ s:done.(  s:done   == 1 ? ' test'    : ' tests'),
+      \ s:errors.(s:errors == 1 ? ' error'   : ' errors'),
+      \ s:fail.(  s:fail   == 1 ? ' failure' : ' failures'),
       \ ]
 call Log('')
 call Log(join(summary, ', '))

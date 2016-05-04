@@ -14,7 +14,7 @@ $VIM -u NONE -U NONE -N                \
 
 cat messages.log
 
-grep -q "0 failures" messages.log
+grep -q "0 errors, 0 failures" messages.log
 status=$?
 rm messages.log
 exit $status
