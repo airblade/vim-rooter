@@ -111,7 +111,7 @@ function! s:ChangeToRootDirectory()
   let s:fd = expand('%:p')
 
   if g:rooter_resolve_links
-    let s:fd = resolve(fd)
+    let s:fd = resolve(s:fd)
   endif
 
   if !s:ChangeDirectoryForBuffer()
@@ -137,7 +137,7 @@ function! FindRootDirectory()
   let s:fd = expand('%:p')
 
   if g:rooter_resolve_links
-    let s:fd = resolve(fd)
+    let s:fd = resolve(s:fd)
   endif
 
   if !s:ChangeDirectoryForBuffer()
