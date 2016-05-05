@@ -5,6 +5,7 @@ function SetUp()
   "   |     +-- bar.txt
   "   +-- baz.txt
   "   +-- quux.z
+  " zab.txt -> project/baz.txt (symlink)
   let tmpdir = resolve(fnamemodify(tempname(), ':h'))
   let s:project_dir = tmpdir.'/project'
   silent call mkdir(s:project_dir.'/_git', 'p')
@@ -12,6 +13,9 @@ function SetUp()
   silent call writefile([], s:project_dir.'/foo/bar.txt')
   silent call writefile([], s:project_dir.'/baz.txt')
   silent call writefile([], s:project_dir.'/quux.z')
+
+  let s:symlink = tmpdir.'/zab.txt'
+  silent call system("ln -nfs ".s:project_dir.'/baz.txt '.s:symlink)
 
   let s:non_project_file = tempname()
   silent call writefile([], s:non_project_file)
@@ -26,6 +30,7 @@ function TearDown()
   call delete(s:project_dir, 'rf')
   call delete(s:non_project_file)
   let g:rooter_targets = s:targets
+  let g:rooter_resolve_links = 0
   execute ':cd' s:cwd
 endfunction
 
@@ -98,5 +103,16 @@ function Test_target_some_files_only()
   execute ':cd' cwd
   execute 'edit' s:project_dir.'/quux.z'
   call assert_equal(cwd, getcwd())
+endfunction
+
+function Test_resolve_symlinks()
+  let cwd = getcwd()
+  call assert_notequal(s:project_dir, cwd)
+  execute 'edit' s:symlink
+  call assert_equal(cwd, getcwd())
+
+  let g:rooter_resolve_links = 1
+  execute ':Rooter'
+  call assert_equal(s:project_dir, getcwd())
 endfunction
 
