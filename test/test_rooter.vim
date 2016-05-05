@@ -27,8 +27,9 @@ function SetUp()
 endfunction
 
 function TearDown()
-  call delete(s:project_dir, 'rf')
-  call delete(s:non_project_file)
+  silent call delete(s:project_dir, 'rf')
+  silent call delete(s:non_project_file)
+  silent call delete(s:symlink)
   let g:rooter_targets = s:targets
   let g:rooter_resolve_links = 0
   execute ':cd' s:cwd
