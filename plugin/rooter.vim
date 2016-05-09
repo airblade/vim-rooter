@@ -58,11 +58,15 @@ function! s:ChangeDirectoryForBuffer()
   endif
 
   if filereadable(s:fd) && empty(&buftype)
-    for p in patterns
-      if p !=# '/' && s:fd =~# glob2regpat(p)
-        return 1
-      endif
-    endfor
+    if exists('*glob2regpat')
+      for p in patterns
+        if p !=# '/' && s:fd =~# glob2regpat(p)
+          return 1
+        endif
+      endfor
+    else
+      return 1
+    endif
   endif
 
   return 0
