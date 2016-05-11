@@ -1,8 +1,8 @@
 "
 " Adapted from https://github.com/vim/vim/blob/master/src/testdir/runtest.vim
 "
-" When debugging tests it can help to add messages to v:errors:
-"    call add(v:errors, 'oh noes')
+" When debugging tests it can help to write debug output:
+"    call Debug('oh noes')
 "
 
 function RunTest(test)
@@ -24,6 +24,10 @@ endfunction
 
 function Log(msg)
   call add(s:messages, a:msg)
+endfunction
+
+function Debug(msg)
+  call add(v:errors, a:msg)
 endfunction
 
 let g:testname = expand('%')
