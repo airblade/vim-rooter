@@ -20,7 +20,7 @@ function SetUp()
   let s:non_project_file = tempname()
   silent call writefile([], s:non_project_file)
 
-  let g:rooter_patterns = ['_git/']
+  let g:rooter_patterns = ['_git/']  " TODO: also test a file rooter pattern
   let s:cwd = getcwd()
   let s:targets = g:rooter_targets
   let g:rooter_targets = '/,*'
