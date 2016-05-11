@@ -1,7 +1,7 @@
 function SetUp()
   " project/
   "   +-- .git/
-  "   +-- foo/
+  "   +-- foo foo/
   "   |     +-- bar.txt
   "   +-- baz.txt
   "   +-- quux.z
@@ -9,8 +9,8 @@ function SetUp()
   let tmpdir = resolve(fnamemodify(tempname(), ':h'))
   let s:project_dir = tmpdir.'/project'
   silent call mkdir(s:project_dir.'/_git', 'p')
-  silent call mkdir(s:project_dir.'/foo', 'p')
-  silent call writefile([], s:project_dir.'/foo/bar.txt')
+  silent call mkdir(s:project_dir.'/foo foo', 'p')
+  silent call writefile([], s:project_dir.'/foo foo/bar.txt')
   silent call writefile([], s:project_dir.'/baz.txt')
   silent call writefile([], s:project_dir.'/quux.z')
 
@@ -43,12 +43,12 @@ function Test_file_in_project()
 endfunction
 
 function Test_file_in_project_subdir()
-  execute 'edit' s:project_dir.'/foo/bar.txt'
+  execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
   call assert_equal(s:project_dir, getcwd())
 endfunction
 
 function Test_dir_in_project()
-  execute 'edit' s:project_dir.'/foo'
+  execute 'edit' s:project_dir.'/foo\ foo'
   " FIXME: test fails without invoking Rooter manually.  I have no idea why.
   execute ':Rooter'
   call assert_equal(s:project_dir, getcwd())
@@ -88,7 +88,7 @@ function Test_target_directories_only()
   execute 'edit' s:project_dir.'/baz.txt'
   call assert_equal(cwd, getcwd())
 
-  execute 'edit' s:project_dir.'/foo'
+  execute 'edit' s:project_dir.'/foo\ foo'
   " FIXME: test fails without invoking Rooter manually.  I have no idea why.
   execute ':Rooter'
   call assert_equal(s:project_dir, getcwd())

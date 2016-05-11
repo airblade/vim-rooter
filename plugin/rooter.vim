@@ -39,7 +39,7 @@ endif
 function! s:ChangeDirectory(directory)
   if a:directory !=# getcwd()
     let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
-    execute ':'.cmd a:directory
+    execute ':'.cmd fnameescape(a:directory)
     if !g:rooter_silent_chdir
       echo a:directory
     endif
@@ -74,9 +74,9 @@ endfunction
 
 function! s:FindAncestor(pattern)
   if s:IsDirectory(a:pattern)
-    let match = finddir(a:pattern, s:fd.';')
+    let match = finddir(a:pattern, fnameescape(s:fd).';')
   else
-    let match = findfile(a:pattern, s:fd.';')
+    let match = findfile(a:pattern, fnameescape(s:fd).';')
   endif
 
   if empty(match)
