@@ -30,6 +30,29 @@ function Debug(msg)
   call add(v:errors, a:msg)
 endfunction
 
+" Shuffles list in place.
+function Shuffle(list)
+  " Fisher-Yates-Durstenfeld-Knuth
+  let n = len(a:list)
+  for i in range(0, n-2)
+    let j = Random(0, n-i-1)
+    let e = a:list[i]
+    let a:list[i] = a:list[i+j]
+    let a:list[i+j] = e
+  endfor
+  return a:list
+endfunction
+
+" Returns a pseudorandom integer i such that 0 <= i <= max
+function Random(min, max)
+  if has('unix')
+    let i = system('echo $RANDOM')  " 0 <= i <= 32767
+  else
+    let i = system('echo %RANDOM%')  " 0 <= i <= 32767
+  endif
+  return i * (a:max - a:min + 1) / 32768 + a:min
+endfunction
+
 let g:testname = expand('%')
 let s:errored = 0
 let s:done = 0
@@ -59,9 +82,8 @@ if argc() > 1
   let s:tests = filter(s:tests, 'v:val =~ argv(1)')
 endif
 
-" Run the tests.
-" TODO: randomise the order of tests.
-for test in s:tests
+" Run the tests in random order.
+for test in Shuffle(s:tests)
   call RunTest(test)
   let s:done += 1
 
