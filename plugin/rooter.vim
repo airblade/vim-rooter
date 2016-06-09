@@ -41,7 +41,7 @@ function! s:ChangeDirectory(directory)
     let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
     execute ':'.cmd fnameescape(a:directory)
     if !g:rooter_silent_chdir
-      echo a:directory
+      echo 'cwd: '.a:directory
     endif
   endif
 endfunction
