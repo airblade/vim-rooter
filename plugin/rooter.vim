@@ -36,6 +36,17 @@ if !exists('g:rooter_resolve_links')
   let g:rooter_resolve_links = 0
 endif
 
+function! s:Normalise(path)
+  " Normalise slashes for safe use of fnameescape(), isdirectory().
+  "
+  " See discussions at:
+  "
+  " - https://github.com/vim/vim/issues/541
+  " - https://github.com/neovim/neovim/issues/3912#issuecomment-167853710
+  " - https://github.com/justinmk/vim-dirvish/commit/4ebdf90a67a4c9a3dbf79e30e0c5fc4648555370
+  return tr(a:path, '\', '/')
+endfunction
+
 function! s:ChangeDirectory(directory)
   if a:directory !=# getcwd()
     let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
@@ -143,6 +154,8 @@ function! FindRootDirectory()
   if g:rooter_resolve_links
     let s:fd = resolve(s:fd)
   endif
+
+  let s:fd = s:Normalise(s:fd)
 
   if !s:ChangeDirectoryForBuffer()
     return ''
