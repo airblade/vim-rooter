@@ -73,10 +73,12 @@ function! s:ChangeDirectoryForBuffer()
 endfunction
 
 function! s:FindAncestor(pattern)
+  let fd_dir = isdirectory(s:fd) ? s:fd : fnamemodify(s:fd, ':h')
+
   if s:IsDirectory(a:pattern)
-    let match = finddir(a:pattern, fnameescape(s:fd).';')
+    let match = finddir(a:pattern, fnameescape(fd_dir).';')
   else
-    let match = findfile(a:pattern, fnameescape(s:fd).';')
+    let match = findfile(a:pattern, fnameescape(fd_dir).';')
   endif
 
   if empty(match)
