@@ -43,6 +43,7 @@ function! s:ChangeDirectory(directory)
     if !g:rooter_silent_chdir
       echo 'cwd: '.a:directory
     endif
+    silent doautocmd <nomodeline> User RooterChDir
   endif
 endfunction
 
