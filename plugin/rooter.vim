@@ -43,7 +43,8 @@ function! s:ChangeDirectory(directory)
     if !g:rooter_silent_chdir
       echo 'cwd: '.a:directory
     endif
-    silent doautocmd <nomodeline> User RooterChDir
+    let s:nomodeline = (v:version > 703 || (v:version == 703 && has('patch442'))) ? '<nomodeline>' : ''
+    execute 'silent doautocmd' . s:nomodeline . 'User RooterChDir'
   endif
 endfunction
 
