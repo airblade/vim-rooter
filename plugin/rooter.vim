@@ -12,6 +12,8 @@ if exists('+autochdir') && &autochdir
   set noautochdir
 endif
 
+let s:nomodeline = (v:version > 703 || (v:version == 703 && has('patch442'))) ? '<nomodeline>' : ''
+
 if !exists('g:rooter_use_lcd')
   let g:rooter_use_lcd = 0
 endif
@@ -43,7 +45,6 @@ function! s:ChangeDirectory(directory)
     if !g:rooter_silent_chdir
       echo 'cwd: '.a:directory
     endif
-    let s:nomodeline = (v:version > 703 || (v:version == 703 && has('patch442'))) ? '<nomodeline>' : ''
     execute 'silent doautocmd' . s:nomodeline . 'User RooterChDir'
   endif
 endfunction
