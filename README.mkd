@@ -11,6 +11,8 @@ By default you don't need to do anything: vim-rooter will change the working dir
 
 You can turn this off (see below) and use the `:Rooter` command to invoke vim-rooter manually.
 
+When Rooter changes the working directory it emits the autocmd user event `RooterChDir`.
+
 
 ## Non-project files
 
