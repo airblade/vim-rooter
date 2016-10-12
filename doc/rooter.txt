@@ -37,6 +37,9 @@ directory automatically and echo the new working directory.
 You can turn this off (see below) and use the |Rooter| command to invoke
 vim-rooter manually.
 
+When Rooter changes the working directory it emits the |autocmd| |User| event
+*RooterChDir*.
+
 ==============================================================================
 Non-project files                                   *rooter-non-project-files*
                              *g:rooter_change_directory_for_non_project_files*
