@@ -117,3 +117,17 @@ function Test_resolve_symlinks()
   call assert_equal(s:project_dir, getcwd())
 endfunction
 
+function Test_user_autocmd()
+  let g:test_user_autocmd = 0
+  autocmd User RooterChDir let g:test_user_autocmd = 1
+
+  execute 'edit' s:project_dir.'/baz.txt'
+  call assert_equal(1, g:test_user_autocmd)
+
+  let g:test_user_autocmd = 0
+  execute 'edit' s:project_dir.'/quux.z'
+  call assert_equal(0, g:test_user_autocmd)
+
+  autocmd! User RooterChDir
+endfunction
+
