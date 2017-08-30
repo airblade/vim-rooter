@@ -131,3 +131,24 @@ function Test_user_autocmd()
   autocmd! User RooterChDir
 endfunction
 
+function Test_write_file_to_different_name()
+  execute 'edit' s:non_project_file
+  let cwd = getcwd()
+
+  let new_name = s:project_dir.'/other.txt'
+  silent execute 'saveas' new_name
+
+  call assert_notequal(cwd, getcwd())
+endfunction
+
+function Test_write_new_file()
+  execute 'edit' s:project_dir.'/baz.txt'
+  let cwd = getcwd()
+
+  enew
+  let g:rooter_change_directory_for_non_project_files = 'current'
+  silent execute 'write' tempname()
+
+  call assert_notequal(cwd, getcwd())
+endfunction
+

@@ -166,6 +166,7 @@ if !exists('g:rooter_manual_only')
   augroup rooter
     autocmd!
     autocmd VimEnter,BufEnter * :Rooter
+    autocmd BufWritePost * :call setbufvar('%', 'rootDir', '') | :Rooter
   augroup END
 endif
 
