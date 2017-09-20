@@ -136,7 +136,9 @@ function! s:ChangeToRootDirectory()
     " Test against 1 for backwards compatibility
     if g:rooter_change_directory_for_non_project_files == 1 ||
           \ g:rooter_change_directory_for_non_project_files ==? 'current'
-      call s:ChangeDirectory(fnamemodify(s:fd, ':h'))
+      if expand('%') != ''
+        call s:ChangeDirectory(fnamemodify(s:fd, ':h'))
+      endif
     elseif g:rooter_change_directory_for_non_project_files ==? 'home'
       call s:ChangeDirectory($HOME)
     endif
