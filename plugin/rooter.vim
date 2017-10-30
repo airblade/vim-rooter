@@ -151,6 +151,10 @@ endfunction
 function! FindRootDirectory()
   let s:fd = expand('%:p')
 
+  if empty(s:fd)
+    let s:fd = getcwd()
+  endif
+
   if g:rooter_resolve_links
     let s:fd = resolve(s:fd)
   endif
