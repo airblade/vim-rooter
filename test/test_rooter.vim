@@ -24,6 +24,8 @@ function SetUp()
   let s:cwd = getcwd()
   let s:targets = g:rooter_targets
   let g:rooter_targets = '/,*'
+
+  let s:suffixesadd = &suffixesadd
 endfunction
 
 function TearDown()
@@ -32,6 +34,7 @@ function TearDown()
   silent call delete(s:symlink)
   let g:rooter_targets = s:targets
   let g:rooter_resolve_links = 0
+  let &suffixesadd = s:suffixesadd
   execute ':cd' s:cwd
 endfunction
 
@@ -44,6 +47,14 @@ endfunction
 
 function Test_file_in_project_subdir()
   execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
+  call assert_equal(s:project_dir, getcwd())
+endfunction
+
+function Test_ignores_suffixesadd()
+  let &suffixesadd = '.txt'
+  let g:rooter_patterns = ['bar']
+  execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
+  execute ':Rooter'
   call assert_equal(s:project_dir, getcwd())
 endfunction
 
