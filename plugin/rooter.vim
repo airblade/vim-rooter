@@ -22,6 +22,10 @@ if !exists('g:rooter_patterns')
   let g:rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
 endif
 
+if !exists('g:ignore_rooter_patterns')
+  let g:ignore_rooter_patterns = []
+endif
+
 if !exists('g:rooter_targets')
   let g:rooter_targets = '/,*'
 endif
@@ -120,6 +124,11 @@ endfunction
 
 function! s:ChangeToRootDirectory()
   let s:fd = expand('%:p')
+  for ipattern in g:ignore_rooter_patterns
+    if s:fd =~ ipattern
+      return ''
+    endif
+  endfor
 
   if empty(s:fd)
     let s:fd = getcwd()

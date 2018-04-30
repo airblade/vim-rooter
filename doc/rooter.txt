@@ -83,6 +83,11 @@ To stop vim-rooter changing directory automatically: >
 To specify how to identify a project's root directory: >
 
     let g:rooter_patterns = ['Rakefile', '.git/']
+
+To specify patterns that if matched to %:p will stop vim-rooter from changing
+directory automatically >
+
+    let g:ignore_rooter_patterns = ['src', 'myproject']
 <
 Vim-rooter checks the patterns depth (height?) first.  Directories must have a
 trailing slash.  To work correctly with git submodules place ".git" before
