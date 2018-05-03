@@ -163,3 +163,11 @@ function Test_write_new_file()
   call assert_notequal(cwd, getcwd())
 endfunction
 
+function Test_directory_is_ancestor()
+  let g:rooter_patterns = ['foo foo/']
+  execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
+
+  execute ':Rooter'
+  call assert_equal(s:project_dir.'/foo foo', getcwd())
+endfunction
+

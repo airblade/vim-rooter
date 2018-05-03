@@ -91,7 +91,16 @@ function! s:FindAncestor(pattern)
   endif
 
   if s:IsDirectory(a:pattern)
-    return fnamemodify(match, ':p:h:h')
+    " If the directory we found (`match`) is part of the file's path,
+    " it is the project root and we return it.  Otherwise, the directory
+    " we found is contained within the project root, so return its parent
+    " i.e. the project root.
+    let fd_match = fnamemodify(match, ':p:h')
+    if stridx(fd_dir, fd_match) == 0
+      return fd_match
+    else
+      return fnamemodify(match, ':p:h:h')
+    endif
   else
     return fnamemodify(match, ':p:h')
   endif
