@@ -114,3 +114,19 @@ let g:rooter_manual_only = 1
 Install into `~/.vim/plugin/rooter.vim` or, if you're using Pathogen, into
 `~/.vim/bundle/rooter.vim`.
 
+### Vundle
+
+```
+Bundle 'nine2/vim-rooter'
+let g:rooter_silent_chdir = 1
+let g:rooter_resolve_links = 1
+nmap <leader>cd :AutoChangeDirectiory <cr>
+```
+
+
+### Command:
+```
+:Rooter
+:ChangeToCurDir
+:AutoChangeDirectiory
+```
