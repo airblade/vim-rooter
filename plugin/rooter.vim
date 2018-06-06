@@ -178,6 +178,7 @@ function! FindRootDirectory()
 endfunction
 
 command! Rooter :call <SID>ChangeToRootDirectory()
+command! ChangeToCurDir :call <SID>ChangeDirectory(expand('%:p:h'))
 
 if !exists('g:rooter_manual_only')
   augroup rooter
