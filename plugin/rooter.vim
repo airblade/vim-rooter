@@ -177,8 +177,31 @@ function! FindRootDirectory()
   return s:RootDirectory()
 endfunction
 
+  " let g:rooter_change_directory_for_non_project_files = ''
+fun! AutoChangeDirectiory()
+    if !exists("g:rooter_auto_change_directory_flag")
+        let g:rooter_auto_change_directory_flag= 0
+    endif
+
+    if g:rooter_auto_change_directory_flag is 0
+        let g:rooter_auto_change_directory_flag = 1
+    else
+        let g:rooter_auto_change_directory_flag = 0
+    endif
+
+    if g:rooter_auto_change_directory_flag is 0
+      return s:ChangeToRootDirectory()
+    else
+      return s:ChangeDirectory(expand('%:p:h'))
+    endif
+endfun
+" map <leader>i :call Nine2IndentGuides()<cr>
+
+
 command! Rooter :call <SID>ChangeToRootDirectory()
 command! ChangeToCurDir :call <SID>ChangeDirectory(expand('%:p:h'))
+command! AutoChangeDirectiory :call AutoChangeDirectiory()
+" nmap <leader>cd :AutoChangeDirectiory <cr>
 
 if !exists('g:rooter_manual_only')
   augroup rooter
