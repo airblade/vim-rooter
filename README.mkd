@@ -120,7 +120,7 @@ Install into `~/.vim/plugin/rooter.vim` or, if you're using Pathogen, into
 Bundle 'nine2/vim-rooter'
 let g:rooter_silent_chdir = 1
 let g:rooter_resolve_links = 1
-nmap <leader>cd :AutoChangeDirectiory <cr>
+nmap <leader>cd :AutoChangeDirectory<cr>
 ```
 
 
@@ -128,5 +128,5 @@ nmap <leader>cd :AutoChangeDirectiory <cr>
 ```
 :Rooter
 :ChangeToCurDir
-:AutoChangeDirectiory
+:AutoChangeDirectory
 ```
