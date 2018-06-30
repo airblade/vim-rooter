@@ -10,7 +10,7 @@ let g:loaded_rooter = 1
 
 let s:nomodeline = (v:version > 703 || (v:version == 703 && has('patch442'))) ? '<nomodeline>' : ''
 
-if exists('+autochdir') && &autochdir
+if exists('+autochdir') && &autochdir && !exists('g:rooter_manual_only')
   set noautochdir
 endif
 
