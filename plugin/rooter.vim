@@ -79,7 +79,7 @@ endfunction
 
 function! s:FindAncestor(pattern)
   let fd_dir = isdirectory(s:fd) ? s:fd : fnamemodify(s:fd, ':h')
-  let fd_dir_escaped = escape(fd_dir, ' ,\')
+  let fd_dir_escaped = escape(fd_dir, ' ')
 
   if s:IsDirectory(a:pattern)
     let match = finddir(a:pattern, fd_dir_escaped.';')
