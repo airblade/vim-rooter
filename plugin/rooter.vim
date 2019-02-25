@@ -52,7 +52,7 @@ function! s:ChangeDirectory(directory)
 endfunction
 
 function! s:IsDirectory(pattern)
-  return stridx(a:pattern, '/') != -1
+  return a:pattern[-1:] == '/'
 endfunction
 
 function! s:ChangeDirectoryForBuffer()
