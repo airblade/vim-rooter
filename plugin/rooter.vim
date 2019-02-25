@@ -77,6 +77,9 @@ function! s:ChangeDirectoryForBuffer()
   return 0
 endfunction
 
+" Returns the ancestor directory of s:fd matching `pattern`.
+"
+" The returned directory does not have a trailing path separator.
 function! s:FindAncestor(pattern)
   let fd_dir = isdirectory(s:fd) ? s:fd : fnamemodify(s:fd, ':h')
   let fd_dir_escaped = escape(fd_dir, ' ')
@@ -94,16 +97,19 @@ function! s:FindAncestor(pattern)
   endif
 
   if s:IsDirectory(a:pattern)
-    " If the directory we found (`match`) is part of the file's path,
-    " it is the project root and we return it.  Otherwise, the directory
-    " we found is contained within the project root, so return its parent
-    " i.e. the project root.
-    let fd_match = fnamemodify(match, ':p:h')
-    if stridx(fd_dir, fd_match) == 0
-      return fd_match
+    " If the directory we found (`match`) is part of the file's path
+    " it is the project root and we return it.
+    "
+    " Compare with trailing path separators to avoid false positives.
+    if stridx(fnamemodify(fd_dir, ':p'), fnamemodify(match, ':p')) == 0
+      return fnamemodify(match, ':p:h')
+
+    " Else the directory we found (`match`) is a subdirectory of the
+    " project root, so return match's parent.
     else
       return fnamemodify(match, ':p:h:h')
     endif
+
   else
     return fnamemodify(match, ':p:h')
   endif
@@ -131,6 +137,7 @@ function! s:RootDirectory()
 endfunction
 
 function! s:ChangeToRootDirectory()
+  " A directory will always have a trailing path separator.
   let s:fd = expand('%:p')
 
   if empty(s:fd)
