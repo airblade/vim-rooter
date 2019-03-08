@@ -3,7 +3,7 @@
 "
 " When debugging tests it can help to write debug output:
 "    call Debug('oh noes')
-"
+"https://github.com/1010101012101/OnionPeeler/blob/All-layers/resources/onion.ico
 
 function RunTest(test)
   if exists("*SetUp")
