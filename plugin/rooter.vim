@@ -48,6 +48,8 @@ function! s:ChangeDirectory(directory)
     if exists('#User#RooterChDir')
       execute 'doautocmd' s:nomodeline 'User RooterChDir'
     endif
+    if exists('*g:Rooter_autocmd')
+      call g:Rooter_autocmd()
   endif
 endfunction
 
