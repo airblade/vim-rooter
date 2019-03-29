@@ -116,13 +116,18 @@ function! s:FindAncestor(pattern)
 endfunction
 
 function! s:SearchForRootDirectory()
+  let max_len = 0
+  let max_len_res = ''
   for pattern in g:rooter_patterns
     let result = s:FindAncestor(pattern)
     if !empty(result)
-      return result
+      if len(result) > max_len
+        let max_len = len(result)
+        let max_len_res = result
+      endif
     endif
   endfor
-  return ''
+  return max_len_res
 endfunction
 
 function! s:RootDirectory()
