@@ -166,6 +166,9 @@ function! s:ChangeToRootDirectory()
   else
     call s:ChangeDirectory(root_dir)
   endif
+  if exists('*g:RooterPostChangeDirectory')
+    call g:RooterPostChangeDirectory()
+  endif
 endfunction
 
 " For third-parties.  Not used by plugin.

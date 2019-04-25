@@ -97,6 +97,17 @@ By default vim-rooter doesn't resolve symbolic links.  To resolve links:
 let g:rooter_resolve_links = 1
 ```
 
+## Callback
+
+Sometime you need to execute commands in your working directory. As vim-rooter use autocmd BufEnter your commands will be excuted in the old directory.
+You can use `g:RooterPostChangeDirectory()` to execute commands in your root directory
+
+```viml
+fu! g:RooterPostChangeDirectory()
+	echo "After directory changed !"
+endfu
+```
+
 
 ## Using root-finding functionality in other scripts
 
