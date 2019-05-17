@@ -192,8 +192,8 @@ command! Rooter :call <SID>ChangeToRootDirectory()
 if !exists('g:rooter_manual_only') || !g:rooter_manual_only
   augroup rooter
     autocmd!
-    autocmd VimEnter,BufEnter * :Rooter
-    autocmd BufWritePost * :call setbufvar('%', 'rootDir', '') | :Rooter
+    autocmd VimEnter,BufEnter * nested :Rooter
+    autocmd BufWritePost * nested :call setbufvar('%', 'rootDir', '') | :Rooter
   augroup END
 endif
 
