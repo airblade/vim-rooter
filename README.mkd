@@ -97,6 +97,16 @@ By default vim-rooter doesn't resolve symbolic links.  To resolve links:
 let g:rooter_resolve_links = 1
 ```
 
+Vim-rooter can be disabled if certain directory or file name is on the path. It
+is very useful if you have nested `.git` repositories and you do not want to
+change your root directory.
+
+```viml
+let g:rooter_excludes = ['extras']
+```
+
+Above will be executed on path /usr/project/lib but not on
+/usr/project/lib/extras. Assuming both are git repositories.
 
 ## Using root-finding functionality in other scripts
 

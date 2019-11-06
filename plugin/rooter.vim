@@ -26,6 +26,10 @@ if !exists('g:rooter_targets')
   let g:rooter_targets = '/,*'
 endif
 
+if !exists('g:rooter_excludes')
+  let g:rooter_excludes = []
+endif
+
 if !exists('g:rooter_change_directory_for_non_project_files')
   let g:rooter_change_directory_for_non_project_files = ''
 endif
@@ -52,7 +56,18 @@ function! s:ChangeDirectory(directory)
 endfunction
 
 function! s:IsDirectory(pattern)
-  return a:pattern[-1:] == '/'
+  let bypass = 0
+  for pattern in g:rooter_excludes
+    if stridx(s:fd, pattern) > -1
+      let bypass = 1
+      break
+    endif
+  endfor
+  if bypass
+    return 0
+  else
+    return a:pattern[-1:] == '/'
+  endif
 endfunction
 
 function! s:ChangeDirectoryForBuffer()
