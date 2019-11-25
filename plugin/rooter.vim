@@ -77,51 +77,23 @@ function! s:ChangeDirectoryForBuffer()
   return 0
 endfunction
 
-" Returns the ancestor directory of s:fd matching `pattern`.
-"
-" The returned directory does not have a trailing path separator.
-function! s:FindAncestor(pattern)
-  let fd_dir = isdirectory(s:fd) ? s:fd : fnamemodify(s:fd, ':h')
-  let fd_dir_escaped = escape(fd_dir, ' ')
-
-  if s:IsDirectory(a:pattern)
-    let match = finddir(a:pattern, fd_dir_escaped.';')
-  else
-    let [_suffixesadd, &suffixesadd] = [&suffixesadd, '']
-    let match = findfile(a:pattern, fd_dir_escaped.';')
-    let &suffixesadd = _suffixesadd
-  endif
-
-  if empty(match)
-    return ''
-  endif
-
-  if s:IsDirectory(a:pattern)
-    " If the directory we found (`match`) is part of the file's path
-    " it is the project root and we return it.
-    "
-    " Compare with trailing path separators to avoid false positives.
-    if stridx(fnamemodify(fd_dir, ':p'), fnamemodify(match, ':p')) == 0
-      return fnamemodify(match, ':p:h')
-
-    " Else the directory we found (`match`) is a subdirectory of the
-    " project root, so return match's parent.
-    else
-      return fnamemodify(match, ':p:h:h')
-    endif
-
-  else
-    return fnamemodify(match, ':p:h')
-  endif
-endfunction
-
 function! s:SearchForRootDirectory()
-  for pattern in g:rooter_patterns
-    let result = s:FindAncestor(pattern)
-    if !empty(result)
-      return result
+  let fd_dir = isdirectory(s:fd) ? s:fd : fnamemodify(s:fd, ':h')
+  let curr = fd_dir
+  " BFS matche the root patterns
+  while 1
+    for pattern in g:rooter_patterns
+      let t = curr.(curr == '/' ? '' : '/').pattern
+      if filereadable(t) || isdirectory(t)
+        return curr
+      endif
+    endfor
+    let prev = curr
+    let curr = fnamemodify(curr, ':h')
+    if curr == prev
+      break
     endif
-  endfor
+  endwhile
   return ''
 endfunction
 
@@ -198,4 +170,3 @@ if !exists('g:rooter_manual_only') || !g:rooter_manual_only
 endif
 
 " vim:set ft=vim sw=2 sts=2 et:
-
