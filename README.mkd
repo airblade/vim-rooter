@@ -79,6 +79,8 @@ Vim-rooter checks the patterns depth (height?) first.  Directories must have a t
 
 If a rooter pattern directory is one of the current file's ancestors, it is taken to be the project root.  Otherwise, vim-rooter looks for an ancestor containing the given pattern directory/file.
 
+Note that using a symlink as a rooter pattern will probably not do what you want.  Vim resolves symlinks when evaluating file paths so you will end up with the symlink source regarded as the root, not its target.
+
 To change directory for the current window only (`:lcd`):
 
 ```viml
