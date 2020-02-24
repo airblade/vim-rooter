@@ -38,6 +38,10 @@ if !exists('g:rooter_resolve_links')
   let g:rooter_resolve_links = 0
 endif
 
+if !exists('g:rooter_check_all_patterns')
+  let g:rooter_check_all_patterns = 0
+endif
+
 function! s:ChangeDirectory(directory)
   if a:directory !=# getcwd()
     let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
@@ -121,9 +125,13 @@ function! s:SearchForRootDirectory()
   for pattern in g:rooter_patterns
     let result = s:FindAncestor(pattern)
     if !empty(result)
-      if len(result) > max_len
-        let max_len = len(result)
-        let max_len_res = result
+      if !g:rooter_check_all_patterns 
+        return result
+      else
+        if len(result) > max_len
+          let max_len = len(result)
+          let max_len_res = result
+        endif
       endif
     endif
   endfor
