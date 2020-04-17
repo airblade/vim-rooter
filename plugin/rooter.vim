@@ -187,13 +187,13 @@ function! FindRootDirectory()
   return s:RootDirectory()
 endfunction
 
-command! Rooter :call <SID>ChangeToRootDirectory()
+command! -bar Rooter :call <SID>ChangeToRootDirectory()
 
 if !exists('g:rooter_manual_only') || !g:rooter_manual_only
   augroup rooter
     autocmd!
-    autocmd VimEnter,BufEnter * nested :Rooter
-    autocmd BufWritePost * nested :call setbufvar('%', 'rootDir', '') | :Rooter
+    autocmd VimEnter,BufEnter * nested if empty(&buftype) | Rooter | endif
+    autocmd BufWritePost * nested if empty(&buftype) | call setbufvar('%', 'rootDir', '') | Rooter | endif
   augroup END
 endif
 
