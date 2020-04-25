@@ -15,6 +15,7 @@ CONTENTS                                                     |rooter-contents|
     Non-project files ............................. |rooter-non-project-files|
     Configuration ..................................... |rooter-configuration|
     Using root-finding functionality in other scripts .. |rooter-finding-root|
+    Pausing Rooter .......................................... |pausing-rooter|
     Installation ....................................... |rooter-installation|
 
 ==============================================================================
@@ -120,6 +121,12 @@ If that's all you need you can turn off the directory-changing behaviour with:
 >
     let g:rooter_manual_only = 1
 <
+
+==============================================================================
+Pausing Rooter                                                *pausing-rooter*
+
+To temporarily pause vim-rooter you can use the |RooterToggle| command. Rooter
+will not change directories until |RooterToggle| is called again.
 
 ==============================================================================
 Installation                                             *rooter-installation*

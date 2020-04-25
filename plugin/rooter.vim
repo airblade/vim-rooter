@@ -136,7 +136,17 @@ function! s:RootDirectory()
   return root_dir
 endfunction
 
+let g:rooter_paused = 0
+
+function! s:RooterToggle()
+  let g:rooter_paused = !g:rooter_paused
+endfunction
+
 function! s:ChangeToRootDirectory()
+  if g:rooter_paused
+    return
+  endif
+
   " A directory will always have a trailing path separator.
   let s:fd = expand('%:p')
 
@@ -188,6 +198,7 @@ function! FindRootDirectory()
 endfunction
 
 command! -bar Rooter :call <SID>ChangeToRootDirectory()
+command! -bar RooterToggle :call <SID>RooterToggle()
 
 if !exists('g:rooter_manual_only') || !g:rooter_manual_only
   augroup rooter
