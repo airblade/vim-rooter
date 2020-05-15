@@ -18,6 +18,10 @@ if !exists('g:rooter_use_lcd')
   let g:rooter_use_lcd = 0
 endif
 
+if !exists('g:rooter_use_tcd')
+  let g:rooter_use_tcd = 0
+endif
+
 if !exists('g:rooter_patterns')
   let g:rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
 endif
@@ -40,7 +44,13 @@ endif
 
 function! s:ChangeDirectory(directory)
   if a:directory !=# getcwd()
-    let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
+    if g:rooter_use_tcd == 1 && v:version >= 800
+      let cmd = 'tcd'
+    elseif g:rooter_use_lcd == 1
+      let cmd = 'lcd'
+    else
+      let cmd='cd'
+    endif
     execute ':'.cmd fnameescape(a:directory)
     if !g:rooter_silent_chdir
       echo 'cwd: '.a:directory

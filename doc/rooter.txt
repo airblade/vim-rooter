@@ -70,6 +70,7 @@ Configuration                                           *rooter-configuration*
                                                         *g:rooter_manual_only*
                                                            *g:rooter_patterns*
                                                             *g:rooter_use_lcd*
+                                                            *g:rooter_use_tcd*
                                                        *g:rooter_silent_chdir*
                                                       *g:rooter_resolve_links*
 
@@ -99,6 +100,10 @@ containing the given pattern directory/file.
 To change directory for the current window only (|:lcd|): >
 
     let g:rooter_use_lcd = 1
+<
+To change directory for the current tab only (vim 8+/neovim only) (|:tcd|): >
+
+    let g:rooter_use_tcd = 1
 <
 To stop vim-rooter echoing the project directory: >
 
