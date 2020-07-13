@@ -86,6 +86,7 @@ function! s:FindAncestor(pattern)
 
   if s:IsDirectory(a:pattern)
     let match = finddir(a:pattern, fd_dir_escaped.';')
+    let match = substitute(match, "/".a:pattern.".*", "", "")
   else
     let [_suffixesadd, &suffixesadd] = [&suffixesadd, '']
     let match = findfile(a:pattern, fd_dir_escaped.';')
