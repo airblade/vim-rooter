@@ -92,8 +92,7 @@ function! s:FindAncestor(pattern)
     let &suffixesadd = _suffixesadd
   endif
   
-  let match = substitute(match, "/*".a:pattern, "", "")
-  return match
+  return substitute(match, "/*".a:pattern, "", "")
 endfunction
 
 function! s:SearchForRootDirectory()
