@@ -92,7 +92,11 @@ function! s:FindAncestor(pattern)
     let &suffixesadd = _suffixesadd
   endif
   
-  return substitute(match, "/*".a:pattern, "", "")
+  let match = substitute(match, a:pattern."$", "", "")
+  if empty(match)
+    return ''
+  endif
+  return fnamemodify(match, ':p:h')
 endfunction
 
 function! s:SearchForRootDirectory()
