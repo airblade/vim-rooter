@@ -1,6 +1,6 @@
 " Vim plugin to change the working directory to the project root.
 "
-" Copyright 2010-2016 Andrew Stewart, <boss@airbladesoftware.com>
+" Copyright 2010-2020 Andrew Stewart, <boss@airbladesoftware.com>
 " Released under the MIT licence.
 
 if exists('g:loaded_rooter') || &cp
@@ -19,7 +19,7 @@ if !exists('g:rooter_use_lcd')
 endif
 
 if !exists('g:rooter_patterns')
-  let g:rooter_patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
+  let g:rooter_patterns = ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile']
 endif
 
 if !exists('g:rooter_targets')
@@ -38,164 +38,143 @@ if !exists('g:rooter_resolve_links')
   let g:rooter_resolve_links = 0
 endif
 
-function! s:ChangeDirectory(directory)
-  if a:directory !=# getcwd()
-    let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
-    execute ':'.cmd fnameescape(a:directory)
-    if !g:rooter_silent_chdir
-      echo 'cwd: '.a:directory
-    endif
-    if exists('#User#RooterChDir')
-      execute 'doautocmd' s:nomodeline 'User RooterChDir'
-    endif
-  endif
-endfunction
-
-function! s:IsDirectory(pattern)
-  return a:pattern[-1:] == '/'
-endfunction
-
-function! s:ChangeDirectoryForBuffer()
-  let patterns = split(g:rooter_targets, ',')
-
-  if isdirectory(s:fd)
-    return index(patterns, '/') != -1
-  endif
-
-  if filereadable(s:fd) && empty(&buftype)
-    if exists('*glob2regpat')
-      for p in patterns
-        if p !=# '/' && s:fd =~# glob2regpat(p)
-          return 1
-        endif
-      endfor
-    else
-      return 1
-    endif
-  endif
-
-  return 0
-endfunction
-
-" Returns the ancestor directory of s:fd matching `pattern`.
-"
-" The returned directory does not have a trailing path separator.
-function! s:FindAncestor(pattern)
-  let fd_dir = isdirectory(s:fd) ? s:fd : fnamemodify(s:fd, ':h')
-  let fd_dir_escaped = escape(fd_dir, ' ')
-
-  if s:IsDirectory(a:pattern)
-    let match = finddir(a:pattern, fd_dir_escaped.';')
-  else
-    let [_suffixesadd, &suffixesadd] = [&suffixesadd, '']
-    let match = findfile(a:pattern, fd_dir_escaped.';')
-    let &suffixesadd = _suffixesadd
-  endif
-
-  if empty(match)
-    return ''
-  endif
-
-  if s:IsDirectory(a:pattern)
-    " If the directory we found (`match`) is part of the file's path
-    " it is the project root and we return it.
-    "
-    " Compare with trailing path separators to avoid false positives.
-    if stridx(fnamemodify(fd_dir, ':p'), fnamemodify(match, ':p')) == 0
-      return fnamemodify(match, ':p:h')
-
-    " Else the directory we found (`match`) is a subdirectory of the
-    " project root, so return match's parent.
-    else
-      return fnamemodify(match, ':p:h:h')
-    endif
-
-  else
-    return fnamemodify(match, ':p:h')
-  endif
-endfunction
-
-function! s:SearchForRootDirectory()
-  for pattern in g:rooter_patterns
-    let result = s:FindAncestor(pattern)
-    if !empty(result)
-      return result
-    endif
-  endfor
-  return ''
-endfunction
-
-function! s:RootDirectory()
-  let root_dir = getbufvar('%', 'rootDir')
-  if empty(root_dir)
-    let root_dir = s:SearchForRootDirectory()
-    if !empty(root_dir)
-      call setbufvar('%', 'rootDir', root_dir)
-    endif
-  endif
-  return root_dir
-endfunction
-
-function! s:ChangeToRootDirectory()
-  " A directory will always have a trailing path separator.
-  let s:fd = expand('%:p')
-
-  if empty(s:fd)
-    let s:fd = getcwd()
-  endif
-
-  if g:rooter_resolve_links
-    let s:fd = resolve(s:fd)
-  endif
-
-  if !s:ChangeDirectoryForBuffer()
-    return
-  endif
-
-  let root_dir = s:RootDirectory()
-  if empty(root_dir)
-    " Test against 1 for backwards compatibility
-    if g:rooter_change_directory_for_non_project_files == 1 ||
-          \ g:rooter_change_directory_for_non_project_files ==? 'current'
-      if expand('%') != ''
-        call s:ChangeDirectory(fnamemodify(s:fd, ':h'))
-      endif
-    elseif g:rooter_change_directory_for_non_project_files ==? 'home'
-      call s:ChangeDirectory($HOME)
-    endif
-  else
-    call s:ChangeDirectory(root_dir)
-  endif
-endfunction
 
 " For third-parties.  Not used by plugin.
 function! FindRootDirectory()
-  let s:fd = expand('%:p')
-
-  if empty(s:fd)
-    let s:fd = getcwd()
-  endif
-
-  if g:rooter_resolve_links
-    let s:fd = resolve(s:fd)
-  endif
-
-  if !s:ChangeDirectoryForBuffer()
-    return ''
-  endif
-
-  return s:RootDirectory()
+  return s:root()
 endfunction
 
-command! -bar Rooter :call <SID>ChangeToRootDirectory()
+
+command! -bar Rooter call <SID>rooter()
+
 
 if !exists('g:rooter_manual_only') || !g:rooter_manual_only
   augroup rooter
     autocmd!
-    autocmd VimEnter,BufEnter * nested if empty(&buftype) | Rooter | endif
-    autocmd BufWritePost * nested if empty(&buftype) | call setbufvar('%', 'rootDir', '') | Rooter | endif
+    autocmd VimEnter,BufEnter * nested Rooter
+    autocmd BufWritePost * nested call setbufvar('%', 'rootDir', '') | Rooter
   augroup END
 endif
 
-" vim:set ft=vim sw=2 sts=2 et:
 
+function! s:rooter()
+  if !s:activate() | return | endif
+
+  let root = getbufvar('%', 'rootDir')
+  if empty(root)
+    let root = s:root()
+    call setbufvar('%', 'rootDir', root)
+  endif
+
+  if empty(root)
+    call s:rootless()
+    return
+  endif
+
+  if root != getcwd()
+    call s:cd(root)
+  endif
+endfunction
+
+
+" Returns true if we should change to the buffer's root directory, false otherwise.
+function! s:activate()
+  if !empty(&buftype) | return 0 | endif
+
+  let patterns = split(g:rooter_targets, ',')
+  let fn = expand('%:p', 1)
+
+  " directory
+  if fn[-1:] == '/'
+    return index(patterns, '/') != -1
+  endif
+
+  " file
+  if !filereadable(fn) | return 0 | endif
+  if !exists('*glob2regpat') | return 1 | endif
+
+  for p in filter(copy(patterns), 'v:val != "/"')
+    if fn =~ glob2regpat(p)
+      return 1
+    endif
+  endfor
+
+  return 0
+endfunction
+
+
+" Returns the root directory or an empty string if no root directory found.
+function! s:root()
+  let dir = s:current()
+
+  " breadth-first search
+  while len(dir) > 1
+    for pattern in g:rooter_patterns
+      if pattern[0] == '='
+        let match = s:is(dir, pattern[1:])
+      else
+        let match = s:has(dir, pattern)
+      endif
+      if match | return dir | endif
+    endfor
+
+    let dir = s:parent(dir)
+  endwhile
+
+  return ''
+endfunction
+
+
+" dir        - full path to a directory
+" identifier - a directory name
+function! s:is(dir, identifier)
+  let identifier = substitute(a:identifier, '/$', '', '')
+  return fnamemodify(a:dir, ':t') ==# identifier
+endfunction
+
+
+" dir        - full path to a directory
+" identifier - a file name or a directory name; may be a glob
+function! s:has(dir, identifier)
+  return !empty(globpath(a:dir, a:identifier, 1))
+endfunction
+
+
+" Returns full path of directory of current file name (which may be a directory).
+function! s:current()
+  let fn = expand('%:p', 1)
+  if g:rooter_resolve_links | let fn = resolve(fn) | endif
+  let dir = fnamemodify(fn, ':h')
+  if empty(dir) | let dir = getcwd() | endif  " opening vim without a file
+  return dir
+endfunction
+
+
+" Returns full path of dir's parent directory.
+function! s:parent(dir)
+  return fnamemodify(a:dir, ':h')
+endfunction
+
+
+function! s:cd(dir)
+  let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
+  execute cmd fnameescape(a:dir)
+  if !g:rooter_silent_chdir | echo 'cwd: '.a:dir | endif
+  if exists('#User#RooterChDir')
+    execute 'doautocmd' s:nomodeline 'User RooterChDir'
+  endif
+endfunction
+
+
+function! s:rootless()
+  let dir = ''
+  if g:rooter_change_directory_for_non_project_files ==? 'current'
+    let dir = s:current()
+  elseif g:rooter_change_directory_for_non_project_files ==? 'home'
+    let dir = $HOME
+  endif
+  if !empty(dir) | call s:cd(dir) | endif
+endfunction
+
+
+" vim:set ft=vim sw=2 sts=2 et:

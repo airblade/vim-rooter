@@ -1,6 +1,6 @@
 function SetUp()
   " project/
-  "   +-- .git/
+  "   +-- _git/
   "   +-- foo foo/
   "   |     +-- bar.txt
   "   +-- baz.txt
@@ -17,25 +17,30 @@ function SetUp()
   let s:symlink = tmpdir.'/zab.txt'
   silent call system("ln -nfs ".s:project_dir.'/baz.txt '.s:symlink)
 
-  let s:non_project_file = tempname()
+  let s:non_project_file = tempname().'.txt'
   silent call writefile([], s:non_project_file)
 
-  let g:rooter_patterns = ['_git/']  " TODO: also test a file rooter pattern
-  let s:cwd = getcwd()
-  let s:targets = g:rooter_targets
-  let g:rooter_targets = '/,*'
+  " Defaults
+  let g:rooter_use_lcd = 0
+  let g:rooter_patterns = ['_git/']
+  let g:rooter_targets = '/,*.txt,*.z'
+  let g:rooter_change_directory_for_non_project_files = ''
+  let g:rooter_silent_chdir = 0
+  let g:rooter_resolve_links = 0
 
-  let s:suffixesadd = &suffixesadd
+  autocmd! User RooterChDir
+
+  set suffixesadd=
+
+  let s:cwd = getcwd()
 endfunction
 
 function TearDown()
   silent call delete(s:project_dir, 'rf')
   silent call delete(s:non_project_file)
   silent call delete(s:symlink)
-  let g:rooter_targets = s:targets
-  let g:rooter_resolve_links = 0
-  let &suffixesadd = s:suffixesadd
-  execute ':cd' s:cwd
+  call setbufvar('%', 'rootDir', '')
+  execute 'cd' s:cwd
 endfunction
 
 
@@ -51,80 +56,67 @@ function Test_file_in_project_subdir()
 endfunction
 
 function Test_ignores_suffixesadd()
-  let &suffixesadd = '.txt'
+  set suffixesadd=.txt
   let g:rooter_patterns = ['bar']
   execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
-  execute ':Rooter'
-  call assert_equal(s:project_dir, getcwd())
+  call assert_equal(s:cwd, getcwd())
 endfunction
 
 function Test_dir_in_project()
   execute 'edit' s:project_dir.'/foo\ foo'
-  " FIXME: test fails without invoking Rooter manually.  I have no idea why.
-  execute ':Rooter'
   call assert_equal(s:project_dir, getcwd())
 endfunction
 
 function Test_project_dir()
   execute 'edit' s:project_dir
-  " FIXME: test fails without invoking Rooter manually.  I have no idea why.
-  execute ':Rooter'
   call assert_equal(s:project_dir, getcwd())
 endfunction
 
 function Test_non_project_file_default()
-  let cwd = getcwd()
   execute 'edit' s:non_project_file
-  call assert_equal(cwd, getcwd())
+  call assert_equal(s:cwd, getcwd())
 endfunction
 
 function Test_non_project_file_change_to_parent()
   let g:rooter_change_directory_for_non_project_files = 'current'
   execute 'edit' s:non_project_file
   call assert_equal(expand('%:p:h'), getcwd())
-  let g:rooter_change_directory_for_non_project_files = ''
 endfunction
 
 function Test_non_project_file_change_to_home()
   let g:rooter_change_directory_for_non_project_files = 'home'
   execute 'edit' s:non_project_file
   call assert_equal(expand('~'), getcwd())
-  let g:rooter_change_directory_for_non_project_files = ''
 endfunction
 
 function Test_target_directories_only()
-  let cwd = getcwd()
   let g:rooter_targets = '/'
 
   execute 'edit' s:project_dir.'/baz.txt'
-  call assert_equal(cwd, getcwd())
+  call assert_equal(s:cwd, getcwd())
 
   execute 'edit' s:project_dir.'/foo\ foo'
-  " FIXME: test fails without invoking Rooter manually.  I have no idea why.
-  execute ':Rooter'
   call assert_equal(s:project_dir, getcwd())
 endfunction
 
 function Test_target_some_files_only()
-  let cwd = getcwd()
   let g:rooter_targets = '*.txt'
 
   execute 'edit' s:project_dir.'/baz.txt'
   call assert_equal(s:project_dir, getcwd())
 
-  execute ':cd' cwd
+  execute 'cd' s:cwd
   execute 'edit' s:project_dir.'/quux.z'
-  call assert_equal(cwd, getcwd())
+  call assert_equal(s:cwd, getcwd())
 endfunction
 
 function Test_resolve_symlinks()
-  let cwd = getcwd()
-  call assert_notequal(s:project_dir, cwd)
   execute 'edit' s:symlink
-  call assert_equal(cwd, getcwd())
+  call assert_equal(s:cwd, getcwd())
 
   let g:rooter_resolve_links = 1
-  execute ':Rooter'
+  call setbufvar('%', 'rootDir', '')
+  Rooter
   call assert_equal(s:project_dir, getcwd())
 endfunction
 
@@ -138,36 +130,49 @@ function Test_user_autocmd()
   let g:test_user_autocmd = 0
   execute 'edit' s:project_dir.'/quux.z'
   call assert_equal(0, g:test_user_autocmd)
-
-  autocmd! User RooterChDir
 endfunction
 
 function Test_write_file_to_different_name()
   execute 'edit' s:non_project_file
-  let cwd = getcwd()
+  call assert_notequal(s:project_dir, getcwd())
 
   let new_name = s:project_dir.'/other.txt'
   silent execute 'saveas' new_name
 
-  call assert_notequal(cwd, getcwd())
+  call assert_equal(s:project_dir, getcwd())
 endfunction
 
 function Test_write_new_file()
   execute 'edit' s:project_dir.'/baz.txt'
-  let cwd = getcwd()
 
   enew
   let g:rooter_change_directory_for_non_project_files = 'current'
-  silent execute 'write' tempname()
+  silent execute 'write' tempname().'.txt'
 
-  call assert_notequal(cwd, getcwd())
+  call assert_equal(expand('%:p:h'), getcwd())
 endfunction
 
 function Test_directory_is_ancestor()
-  let g:rooter_patterns = ['foo foo/']
+  let g:rooter_patterns = ['=foo foo/']
   execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
-
-  execute ':Rooter'
   call assert_equal(s:project_dir.'/foo foo', getcwd())
 endfunction
 
+function Test_glob()
+  let g:rooter_patterns = ['*.z']
+  execute 'edit' s:project_dir.'/baz.txt'
+  call assert_equal(s:project_dir, getcwd())
+
+  let g:rooter_patterns = ['**/bar.txt']
+  execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
+  call assert_equal(s:project_dir.'/foo foo', getcwd())
+
+  execute 'edit' s:project_dir.'/baz.txt'
+  call assert_equal(s:project_dir, getcwd())
+endfunction
+
+function Test_has_file_in_subdirectory()
+  let g:rooter_patterns = ['foo\ foo/bar.txt']
+  execute 'edit' s:project_dir.'/baz.txt'
+  call assert_equal(s:project_dir, getcwd())
+endfunction
