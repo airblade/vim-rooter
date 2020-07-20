@@ -176,3 +176,12 @@ function Test_has_file_in_subdirectory()
   execute 'edit' s:project_dir.'/baz.txt'
   call assert_equal(s:project_dir, getcwd())
 endfunction
+
+function Test_toggle()
+  RooterToggle
+  execute 'edit' s:project_dir.'/baz.txt'
+  call assert_equal(s:cwd, getcwd())
+  RooterToggle
+  " Rooter
+  call assert_equal(s:project_dir, getcwd())
+endfunction

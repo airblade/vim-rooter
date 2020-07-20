@@ -10,7 +10,11 @@ let g:loaded_rooter = 1
 
 let s:nomodeline = (v:version > 703 || (v:version == 703 && has('patch442'))) ? '<nomodeline>' : ''
 
-if exists('+autochdir') && &autochdir && (!exists('g:rooter_manual_only') || !g:rooter_manual_only)
+if !exists('g:rooter_manual_only')
+  let g:rooter_manual_only = 0
+endif
+
+if exists('+autochdir') && &autochdir && !g:rooter_manual_only
   set noautochdir
 endif
 
@@ -46,15 +50,14 @@ endfunction
 
 
 command! -bar Rooter call <SID>rooter()
+command! -bar RooterToggle call <SID>toggle()
 
 
-if !exists('g:rooter_manual_only') || !g:rooter_manual_only
-  augroup rooter
-    autocmd!
-    autocmd VimEnter,BufReadPost,BufEnter * nested Rooter
-    autocmd BufWritePost * nested call setbufvar('%', 'rootDir', '') | Rooter
-  augroup END
-endif
+augroup rooter
+  autocmd!
+  autocmd VimEnter,BufReadPost,BufEnter * nested if !g:rooter_manual_only | Rooter | endif
+  autocmd BufWritePost * nested if !g:rooter_manual_only | call setbufvar('%', 'rootDir', '') | Rooter | endif
+augroup END
 
 
 function! s:rooter()
@@ -174,6 +177,12 @@ function! s:rootless()
     let dir = $HOME
   endif
   if !empty(dir) | call s:cd(dir) | endif
+endfunction
+
+
+function! s:toggle()
+  if g:rooter_manual_only | Rooter | endif
+  let g:rooter_manual_only = !g:rooter_manual_only
 endfunction
 
 

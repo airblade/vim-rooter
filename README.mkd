@@ -80,13 +80,19 @@ let g:rooter_patterns = ['.git', 'Makefile', '*.sln', 'build/env.sh']
     let g:rooter_change_directory_for_non_project_files = 'home'
     ```
 
-### Miscellaneous
 
-To stop Rooter changing directory automatically:
+### Running automatically or manually
+
+To toggle between automatic and manual behaviour, use `:RooterToggle`.
+
+To make Rooter start in manual mode:
 
 ```viml
 let g:rooter_manual_only = 1
 ```
+
+
+### Miscellaneous
 
 To change directory for the current window only (`:lcd`):
 

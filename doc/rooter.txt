@@ -37,7 +37,7 @@ Usage                                                           *rooter-usage*
 By default you don't need to do anything: Rooter will change the working
 directory automatically and echo the new working directory.
 
-You can turn this off (see below) and use the |Rooter| command to invoke
+You can turn this off (see below) and use the |:Rooter| command to invoke
 Rooter manually.
 
 When Rooter changes the working directory it emits the |autocmd| |User| event
@@ -96,7 +96,14 @@ There are three options for non-project files/directories:
 Default: ''
 
 ------------------------------------------------------------------------------
-To stop Rooter changing directory automatically:        *g:rooter_manual_only*
+Running automatically or manually                       *g:rooter_manual_only*
+                                                               *:RooterToggle*
+                                                                     *:Rooter*
+
+To toggle between automatic and manual behaviour, use |:RooterToggle|. When
+running manually you can invoke Rooter with |:Rooter|.
+
+To make Rooter start in manual mode:
 >
     let g:rooter_manual_only = 1
 <
