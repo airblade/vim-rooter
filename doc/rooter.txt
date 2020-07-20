@@ -110,11 +110,11 @@ To make Rooter start in manual mode:
 Default: 0
 
 ------------------------------------------------------------------------------
-To change directory for the current window only (|:lcd|):   *g:rooter_use_lcd*
+To change the change-directory command:                      *g:rooter_cd_cmd*
 >
-    let g:rooter_use_lcd = 1
+    let g:rooter_cd_cmd = 'lcd'
 <
-Default: 0
+Default: "cd"
 
 ------------------------------------------------------------------------------
 To stop Rooter echoing the project directory:          *g:rooter_silent_chdir*

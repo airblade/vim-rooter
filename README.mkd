@@ -94,10 +94,10 @@ let g:rooter_manual_only = 1
 
 ### Miscellaneous
 
-To change directory for the current window only (`:lcd`):
+By default vim-rooter uses `:cd` to change directory.  To use `:lcd` or `:tcd` instead:
 
 ```viml
-let g:rooter_use_lcd = 1
+let g:rooter_cd_cmd = 'lcd'
 ```
 
 To stop Rooter echoing the project directory:

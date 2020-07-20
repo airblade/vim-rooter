@@ -18,8 +18,13 @@ if exists('+autochdir') && &autochdir && !g:rooter_manual_only
   set noautochdir
 endif
 
-if !exists('g:rooter_use_lcd')
-  let g:rooter_use_lcd = 0
+if exists('g:rooter_use_lcd')
+  echoerr 'vim-rooter: please replace g:rooter_use_lcd=1 with g:rooter_cd_cmd="lcd"'
+  let g:rooter_cd_cmd = 'lcd'
+endif
+
+if !exists('g:rooter_cd_cmd')
+  let g:rooter_cd_cmd = 'cd'
 endif
 
 if !exists('g:rooter_patterns')
@@ -160,8 +165,7 @@ endfunction
 
 
 function! s:cd(dir)
-  let cmd = g:rooter_use_lcd == 1 ? 'lcd' : 'cd'
-  execute cmd fnameescape(a:dir)
+  execute g:rooter_cd_cmd fnameescape(a:dir)
   if !g:rooter_silent_chdir | echo 'cwd: '.a:dir | endif
   if exists('#User#RooterChDir')
     execute 'doautocmd' s:nomodeline 'User RooterChDir'
