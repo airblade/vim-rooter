@@ -182,7 +182,6 @@ function Test_toggle()
   execute 'edit' s:project_dir.'/baz.txt'
   call assert_equal(s:cwd, getcwd())
   RooterToggle
-  " Rooter
   call assert_equal(s:project_dir, getcwd())
 endfunction
 
