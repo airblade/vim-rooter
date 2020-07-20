@@ -118,12 +118,23 @@ function! s:root()
   " breadth-first search
   while len(dir) > 1
     for pattern in g:rooter_patterns
-      if pattern[0] == '='
-        let match = s:is(dir, pattern[1:])
+      if pattern[0] == '!'
+        let [p, exclude] = [pattern[1:], 1]
       else
-        let match = s:has(dir, pattern)
+        let [p, exclude] = [pattern, 0]
       endif
-      if match | return dir | endif
+      if p[0] == '='
+        let match = s:is(dir, p[1:])
+      else
+        let match = s:has(dir, p)
+      endif
+      if match
+        if exclude
+          break
+        else
+          return dir
+        endif
+      endif
     endfor
 
     let dir = s:parent(dir)

@@ -7,6 +7,8 @@ The project root can be identified by:
 - being a known directory;
 - having a known directory or file.
 
+You can also exclude directories.
+
 For a file or directory which doesn't have a root, Rooter can: do nothing; change to the file's directory (similar to `autochdir`); or change to your home directory.
 
 
@@ -57,6 +59,12 @@ To specify the root has a certain directory or file (which may be a glob), just 
 
 ```viml
 let g:rooter_patterns = ['.git', 'Makefile', '*.sln', 'build/env.sh']
+```
+
+To exclude a directory, prefix it with `!`.
+
+```viml
+let g:rooter_patterns = ['!=extras', '!build/env.sh']
 ```
 
 

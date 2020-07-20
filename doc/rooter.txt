@@ -26,6 +26,8 @@ The project root can be identified by:
 - being a known directory;
 - having a known directory or file.
 
+You can also exclude directories.
+
 For a file or directory which doesn't have a root, Rooter can: do nothing;
 change to the file's directory (similar to 'autochdir'); or change to your
 home directory.
@@ -75,6 +77,11 @@ just give the name:
     let g:rooter_patterns = ['.git', 'Makefile', '*.sln', 'build/env.sh']
 <
 Default: ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile']
+
+To exclude a directory, prefix it with `!`.
+>
+    let g:rooter_patterns = ['!=src']
+<
 
 ------------------------------------------------------------------------------
 Non-project files            *g:rooter_change_directory_for_non_project_files*

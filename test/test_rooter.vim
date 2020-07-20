@@ -185,3 +185,9 @@ function Test_toggle()
   " Rooter
   call assert_equal(s:project_dir, getcwd())
 endfunction
+
+function Test_exclude()
+  let g:rooter_patterns = ['!_git']
+  execute 'edit' s:project_dir.'/baz.txt'
+  call assert_equal(s:cwd, getcwd())
+endfunction
