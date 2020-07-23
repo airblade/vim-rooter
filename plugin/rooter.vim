@@ -116,7 +116,7 @@ function! s:root()
   let dir = s:current()
 
   " breadth-first search
-  while len(dir) > 1
+  while 1
     for pattern in g:rooter_patterns
       if pattern[0] == '!'
         let [p, exclude] = [pattern[1:], 1]
@@ -132,7 +132,8 @@ function! s:root()
       endif
     endfor
 
-    let dir = s:parent(dir)
+    let [current, dir] = [dir, s:parent(dir)]
+    if current == dir | break | endif
   endwhile
 
   return ''
@@ -175,9 +176,10 @@ endfunction
 " identifier - a directory name
 function! s:sub(dir, identifier)
   let path = s:parent(a:dir)
-  while len(path) > 1
+  while 1
     if fnamemodify(path, ':t') ==# a:identifier | return 1 | endif
-    let path = s:parent(path)
+    let [current, path] = [path, s:parent(path)]
+    if current == path | break | endif
   endwhile
   return 0
 endfunction
