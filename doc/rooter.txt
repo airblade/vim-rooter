@@ -24,7 +24,8 @@ when you open a file or directory.
 The project root can be identified by:
 
 - being a known directory;
-- having a known directory or file.
+- having a known directory or file;
+- being a subdirectory of a known directory.
 
 You can also exclude directories.
 
@@ -64,6 +65,8 @@ Default: '/,*'
 ------------------------------------------------------------------------------
 How to identify a root directory                           *g:rooter_patterns*
 
+Default: ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile']
+
 Set `g:rooter_patterns` to a list of identifiers.  They are checked breadth-
 first as Rooter walks up the directory tree and the first match is used.
 
@@ -76,12 +79,16 @@ just give the name:
 >
     let g:rooter_patterns = ['.git', 'Makefile', '*.sln', 'build/env.sh']
 <
-Default: ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile']
-
-To exclude a directory, prefix it with `!`.
+To specify the root has a certain directory as an ancestor (useful for
+excluding directories), prefix it with `^`:
 >
-    let g:rooter_patterns = ['!=src']
+    let g:rooter_patterns = ['^fixtures']
 <
+To exclude a pattern, prefix it with `!`.
+>
+    let g:rooter_patterns = ['!=src', '!build/env.sh', '!^fixtures']
+<
+List your exclusions before the patterns you do want.
 
 ------------------------------------------------------------------------------
 Non-project files            *g:rooter_change_directory_for_non_project_files*

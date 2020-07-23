@@ -5,7 +5,8 @@ Rooter changes the working directory to the project root when you open a file or
 The project root can be identified by:
 
 - being a known directory;
-- having a known directory or file.
+- having a known directory or file;
+- being a subdirectory of a known directory.
 
 You can also exclude directories.
 
@@ -61,11 +62,19 @@ To specify the root has a certain directory or file (which may be a glob), just 
 let g:rooter_patterns = ['.git', 'Makefile', '*.sln', 'build/env.sh']
 ```
 
-To exclude a directory, prefix it with `!`.
+To specify the root has a certain directory as an ancestor (useful for excluding directories), prefix it with `^`:
 
 ```viml
-let g:rooter_patterns = ['!=extras', '!build/env.sh']
+let g:rooter_patterns = ['^fixtures']
 ```
+
+To exclude a pattern, prefix it with `!`.
+
+```viml
+let g:rooter_patterns = ['!=extras', '!^fixtures', '!build/env.sh']
+```
+
+List your exclusions before the patterns you do want.
 
 
 ### Non-project files

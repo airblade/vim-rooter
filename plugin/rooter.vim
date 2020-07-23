@@ -125,6 +125,8 @@ function! s:root()
       endif
       if p[0] == '='
         let match = s:is(dir, p[1:])
+      elseif p[0] == '^'
+        let match = s:sub(dir, p[1:])
       else
         let match = s:has(dir, p)
       endif
@@ -144,6 +146,8 @@ function! s:root()
 endfunction
 
 
+" Returns true if dir is identifier, false otherwise.
+"
 " dir        - full path to a directory
 " identifier - a directory name
 function! s:is(dir, identifier)
@@ -152,10 +156,26 @@ function! s:is(dir, identifier)
 endfunction
 
 
+" Returns true if dir contains identifier, false otherwise.
+"
 " dir        - full path to a directory
 " identifier - a file name or a directory name; may be a glob
 function! s:has(dir, identifier)
   return !empty(globpath(a:dir, a:identifier, 1))
+endfunction
+
+
+" Returns true if identifier is an ancestor of dir, false otherwise.
+"
+" dir        - full path to a directory
+" identifier - a directory name
+function! s:sub(dir, identifier)
+  let path = s:parent(a:dir)
+  while len(path) > 1
+    if fnamemodify(path, ':t') ==# a:identifier | return 1 | endif
+    let path = s:parent(path)
+  endwhile
+  return 0
 endfunction
 
 

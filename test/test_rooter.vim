@@ -158,6 +158,12 @@ function Test_directory_is_ancestor()
   call assert_equal(s:project_dir.'/foo foo', getcwd())
 endfunction
 
+function Test_directory_is_subdirectory()
+  let g:rooter_patterns = ['!^project', '*.txt']
+  execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
+  call assert_equal(s:project_dir, getcwd())
+endfunction
+
 function Test_glob()
   let g:rooter_patterns = ['*.z']
   execute 'edit' s:project_dir.'/baz.txt'
