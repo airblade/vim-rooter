@@ -123,14 +123,7 @@ function! s:root()
       else
         let [p, exclude] = [pattern, 0]
       endif
-      if p[0] == '='
-        let match = s:is(dir, p[1:])
-      elseif p[0] == '^'
-        let match = s:sub(dir, p[1:])
-      else
-        let match = s:has(dir, p)
-      endif
-      if match
+      if s:match(dir, p)
         if exclude
           break
         else
@@ -143,6 +136,17 @@ function! s:root()
   endwhile
 
   return ''
+endfunction
+
+
+function s:match(dir, pattern)
+  if a:pattern[0] == '='
+    return s:is(a:dir, a:pattern[1:])
+  elseif a:pattern[0] == '^'
+    return s:sub(a:dir, a:pattern[1:])
+  else
+    return s:has(a:dir, a:pattern)
+  endif
 endfunction
 
 
