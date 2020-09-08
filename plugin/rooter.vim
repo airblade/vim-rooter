@@ -79,9 +79,7 @@ function! s:rooter()
     return
   endif
 
-  if root != getcwd()
-    call s:cd(root)
-  endif
+  call s:cd(root)
 endfunction
 
 
@@ -201,7 +199,9 @@ function! s:parent(dir)
 endfunction
 
 
+" Changes to the given directory unless it is already the current one.
 function! s:cd(dir)
+  if a:dir == getcwd() | return | endif
   execute g:rooter_cd_cmd fnameescape(a:dir)
   if !g:rooter_silent_chdir | echo 'cwd: '.a:dir | endif
   if exists('#User#RooterChDir')
