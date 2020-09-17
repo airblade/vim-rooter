@@ -90,6 +90,8 @@ function! s:activate()
   let patterns = split(g:rooter_targets, ',')
   let fn = expand('%:p', 1)
 
+  if empty(fn) | return 1 | endif  " opening vim without a file
+
   " directory
   if fn[-1:] == '/'
     return index(patterns, '/') != -1
@@ -188,7 +190,7 @@ function! s:current()
   let fn = expand('%:p', 1)
   if g:rooter_resolve_links | let fn = resolve(fn) | endif
   let dir = fnamemodify(fn, ':h')
-  if empty(dir) | let dir = getcwd() | endif  " opening vim without a file
+  if empty(dir) || dir == '.' | let dir = getcwd() | endif  " opening vim without a file
   return dir
 endfunction
 
