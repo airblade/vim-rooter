@@ -44,6 +44,8 @@ function TearDown()
 endfunction
 
 
+" NOTE: ideally there would be a test for opening vim without a file
+" but since vim is already open when the tests are run, we cannot test it.
 
 function Test_file_in_project()
   execute 'edit' s:project_dir.'/baz.txt'

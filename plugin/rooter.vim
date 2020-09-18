@@ -91,7 +91,7 @@ function! s:activate()
   let fn = expand('%:p', 1)
 
   " directory
-  if fn[-1:] == '/'
+  if empty(fn) || fn[-1:] == '/'
     return index(patterns, '/') != -1
   endif
 
@@ -186,10 +186,9 @@ endfunction
 " Returns full path of directory of current file name (which may be a directory).
 function! s:current()
   let fn = expand('%:p', 1)
+  if empty(fn) | return getcwd() | endif  " opening vim without a file
   if g:rooter_resolve_links | let fn = resolve(fn) | endif
-  let dir = fnamemodify(fn, ':h')
-  if empty(dir) | let dir = getcwd() | endif  " opening vim without a file
-  return dir
+  return fnamemodify(fn, ':h')
 endfunction
 
 
