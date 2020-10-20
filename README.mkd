@@ -68,6 +68,12 @@ To specify the root has a certain directory as an ancestor (useful for excluding
 let g:rooter_patterns = ['^fixtures']
 ```
 
+To specify the root has a certain directory as a direct ancestor, prefix it with `>`:
+
+```viml
+let g:rooter_patterns = ['>site-packages']
+```
+
 To exclude a pattern, prefix it with `!`.
 
 ```viml

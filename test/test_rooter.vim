@@ -1,6 +1,9 @@
 function SetUp()
   " project/
   "   +-- _git/
+  "   +-- foo/
+  "         +-- bar/
+  "             +-- baz.txt
   "   +-- foo foo/
   "   |     +-- bar.txt
   "   +-- baz.txt
@@ -10,9 +13,11 @@ function SetUp()
   let s:project_dir = tmpdir.'/project'
   silent call mkdir(s:project_dir.'/_git', 'p')
   silent call mkdir(s:project_dir.'/foo foo', 'p')
+  silent call mkdir(s:project_dir.'/foo/bar', 'p')
   silent call writefile([], s:project_dir.'/foo foo/bar.txt')
   silent call writefile([], s:project_dir.'/baz.txt')
   silent call writefile([], s:project_dir.'/quux.z')
+  silent call writefile([], s:project_dir.'/foo/bar/baz.txt')
 
   let s:symlink = tmpdir.'/zab.txt'
   silent call system("ln -nfs ".s:project_dir.'/baz.txt '.s:symlink)
@@ -158,6 +163,12 @@ function Test_directory_is_ancestor()
   let g:rooter_patterns = ['=foo foo/']
   execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
   call assert_equal(s:project_dir.'/foo foo', getcwd())
+endfunction
+
+function Test_directory_is_direct_ancestor()
+  let g:rooter_patterns = ['>project']
+  execute 'edit' s:project_dir.'/foo/bar/baz.txt'
+  call assert_equal(s:project_dir.'/foo', getcwd())
 endfunction
 
 function Test_directory_is_subdirectory()

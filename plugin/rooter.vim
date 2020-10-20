@@ -143,6 +143,8 @@ function s:match(dir, pattern)
     return s:is(a:dir, a:pattern[1:])
   elseif a:pattern[0] == '^'
     return s:sub(a:dir, a:pattern[1:])
+  elseif a:pattern[0] == '>'
+    return s:direct(a:dir, a:pattern[1:])
   else
     return s:has(a:dir, a:pattern)
   endif
@@ -180,6 +182,20 @@ function! s:sub(dir, identifier)
     if current == path | break | endif
   endwhile
   return 0
+endfunction
+
+
+" Returns true if identifier is a direct ancestor of dir, false otherwise.
+"
+" dir        - full path to a directory
+" identifier - a directory name
+function! s:direct(dir, identifier)
+  let path = s:parent(a:dir)
+  if fnamemodify(path, ':t') ==# a:identifier
+    return 1
+  else
+    return 0
+  endif
 endfunction
 
 
