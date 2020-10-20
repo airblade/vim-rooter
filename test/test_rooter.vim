@@ -2,8 +2,8 @@ function SetUp()
   " project/
   "   +-- _git/
   "   +-- foo/
-  "         +-- bar/
-  "             +-- baz.txt
+  "   |     +-- bar/
+  "   |         +-- baz.txt
   "   +-- foo foo/
   "   |     +-- bar.txt
   "   +-- baz.txt
