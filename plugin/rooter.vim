@@ -39,6 +39,10 @@ if !exists('g:rooter_change_directory_for_non_project_files')
   let g:rooter_change_directory_for_non_project_files = ''
 endif
 
+if !exists('g:rooter_change_directory_for_project_files')
+  let g:rooter_change_directory_for_project_files = 'root'
+endif
+
 if !exists('g:rooter_silent_chdir')
   let g:rooter_silent_chdir = 0
 endif
@@ -79,7 +83,12 @@ function! s:rooter()
     return
   endif
 
-  call s:cd(root)
+  if g:rooter_change_directory_for_project_files ==? 'root'
+    let dir = root
+  elseif g:rooter_change_directory_for_non_project_files ==? 'current'
+    let dir = s:current()
+  endif
+  call s:cd(dir)
 endfunction
 
 
