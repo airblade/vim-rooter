@@ -202,7 +202,7 @@ endfunction
 function! s:cd(dir)
   if a:dir == getcwd() | return | endif
   execute g:rooter_cd_cmd fnameescape(a:dir)
-  if !g:rooter_silent_chdir | echo 'cwd: '.a:dir | endif
+  if !g:rooter_silent_chdir | redraw | echo 'cwd: '.a:dir | endif
   if exists('#User#RooterChDir')
     execute 'doautocmd' s:nomodeline 'User RooterChDir'
   endif
