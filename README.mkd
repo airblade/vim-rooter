@@ -7,6 +7,7 @@ The project root can be identified by:
 - being a known directory;
 - having a known directory or file;
 - being a subdirectory of a known directory.
+- being a direct subdirectory of a known directory
 
 You can also exclude directories.
 
@@ -68,6 +69,11 @@ To specify the root has a certain directory as an ancestor (useful for excluding
 let g:rooter_patterns = ['^fixtures']
 ```
 
+To specify the root has a certain directory as a direct ancestor (useful when you put working projects in a common folder). prefix it with>:
+
+```viml
+let g:rooter_patterns = ['>Latex']
+```
 To exclude a pattern, prefix it with `!`.
 
 ```viml
