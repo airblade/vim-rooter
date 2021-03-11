@@ -1,6 +1,9 @@
 function SetUp()
   " project/
   "   +-- _git/
+  "   +-- a/
+  "   |     +-- b/
+  "   |           +- c.txt
   "   +-- foo foo/
   "   |     +-- bar.txt
   "   +-- baz.txt
@@ -11,6 +14,8 @@ function SetUp()
   silent call mkdir(s:project_dir.'/_git', 'p')
   silent call mkdir(s:project_dir.'/foo foo', 'p')
   silent call writefile([], s:project_dir.'/foo foo/bar.txt')
+  silent call mkdir(s:project_dir.'/a/b', 'p')
+  silent call writefile([], s:project_dir.'/a/b/c.txt')
   silent call writefile([], s:project_dir.'/baz.txt')
   silent call writefile([], s:project_dir.'/quux.z')
 
@@ -154,16 +159,22 @@ function Test_write_new_file()
   call assert_equal(expand('%:p:h'), getcwd())
 endfunction
 
-function Test_directory_is_ancestor()
+function Test_root_is_directory()
   let g:rooter_patterns = ['=foo foo/']
   execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
   call assert_equal(s:project_dir.'/foo foo', getcwd())
 endfunction
 
-function Test_directory_is_subdirectory()
+function Test_root_has_ancestor()
   let g:rooter_patterns = ['!^project', '*.txt']
   execute 'edit' s:project_dir.'/foo\ foo/bar.txt'
   call assert_equal(s:project_dir, getcwd())
+endfunction
+
+function Test_root_has_parent()
+  let g:rooter_patterns = ['>a']
+  execute 'edit' s:project_dir.'/a/b/c.txt'
+  call assert_equal(s:project_dir.'/a/b', getcwd())
 endfunction
 
 function Test_glob()
