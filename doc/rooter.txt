@@ -84,6 +84,12 @@ excluding directories), prefix it with `^`:
 >
     let g:rooter_patterns = ['^fixtures']
 <
+To specify the root has a certain directory as its direct ancestor / parent
+(useful for when you put working projects in a common direcotry), prefix it
+with `>`:
+>
+    let g:rooter_patterns = ['>Latex']
+<
 To exclude a pattern, prefix it with `!`.
 >
     let g:rooter_patterns = ['!=src', '!build/env.sh', '!^fixtures']

@@ -144,7 +144,7 @@ function s:match(dir, pattern)
   elseif a:pattern[0] == '^'
     return s:sub(a:dir, a:pattern[1:])
   elseif a:pattern[0] == '>'
-    return s:directsub(a:dir, a:pattern[1:])
+    return s:child(a:dir, a:pattern[1:])
   else
     return s:has(a:dir, a:pattern)
   endif
@@ -170,7 +170,9 @@ function! s:has(dir, identifier)
 endfunction
 
 
-" Returns true if identifier is an ancestor of dir, false otherwise.
+" Returns true if identifier is an ancestor of dir,
+" i.e. dir is a subdirectory (no matter how many levels) of identifier;
+" false otherwise.
 "
 " dir        - full path to a directory
 " identifier - a directory name
@@ -184,13 +186,14 @@ function! s:sub(dir, identifier)
   return 0
 endfunction
 
-" Return true if identifier is a direct ancestor of dir, false otherwise
+" Return true if identifier is a direct ancestor (parent) of dir,
+" i.e. dir is a direct subdirectory (child) of identifier; false otherwise
 "
 " dir        - full path to a directory
 " identifier - a directory name
-function! s:directsub(dir, identifier)
+function! s:child(dir, identifier)
   let path = s:parent(a:dir)
-    return fnamemodify(path, ':t') ==# a:identifier
+  return fnamemodify(path, ':t') ==# a:identifier
 endfunction
 
 " Returns full path of directory of current file name (which may be a directory).
