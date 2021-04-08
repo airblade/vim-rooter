@@ -166,7 +166,11 @@ endfunction
 " dir        - full path to a directory
 " identifier - a file name or a directory name; may be a glob
 function! s:has(dir, identifier)
-  return !empty(globpath(a:dir, a:identifier, 1))
+  " We do not want a:dir to be treated as a glob so escape any wildcards.
+  " If this approach is problematic (e.g. on Windows), an alternative
+  " might be to change directory to a:dir, call globpath() with just
+  " a:identifier, then restore the working directory.
+  return !empty(globpath(escape(a:dir, '?*[]'), a:identifier, 1))
 endfunction
 
 

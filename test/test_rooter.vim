@@ -9,6 +9,9 @@ function SetUp()
   "   +-- baz.txt
   "   +-- quux.z
   " zab.txt -> project/baz.txt (symlink)
+  " [a-c]/
+  "   +-- xyz/
+  "         +-- m.txt
   let tmpdir = resolve(fnamemodify(tempname(), ':h'))
   let s:project_dir = tmpdir.'/project'
   silent call mkdir(s:project_dir.'/_git', 'p')
@@ -18,6 +21,9 @@ function SetUp()
   silent call writefile([], s:project_dir.'/a/b/c.txt')
   silent call writefile([], s:project_dir.'/baz.txt')
   silent call writefile([], s:project_dir.'/quux.z')
+  let s:wildcard_dir = tmpdir.'/[c-a]'
+  silent call mkdir(s:wildcard_dir.'/xyz', 'p')
+  silent call writefile([], s:wildcard_dir.'/xyz/m.txt')
 
   let s:symlink = tmpdir.'/zab.txt'
   silent call system("ln -nfs ".s:project_dir.'/baz.txt '.s:symlink)
@@ -208,4 +214,10 @@ function Test_exclude()
   let g:rooter_patterns = ['!_git']
   execute 'edit' s:project_dir.'/baz.txt'
   call assert_equal(s:cwd, getcwd())
+endfunction
+
+function Test_root_contains_wildcards()
+  let g:rooter_patterns = ['x?z']
+  execute 'edit' s:wildcard_dir.'/xyz/m.txt'
+  call assert_equal(s:wildcard_dir, getcwd())
 endfunction
