@@ -85,10 +85,14 @@ endfunction
 
 " Returns true if we should change to the buffer's root directory, false otherwise.
 function! s:activate()
-  if !empty(&buftype) | return 0 | endif
+  " Directory browser plugins (e.g. vim-dirvish, NERDTree) tend to
+  " set a nofile buftype when you open a directory.
+  if &buftype != '' && &buftype != 'nofile' | return 0 | endif
 
   let patterns = split(g:rooter_targets, ',')
   let fn = expand('%:p', 1)
+
+  if fn =~ 'NERD_tree_\d\+$' | let fn = b:NERDTree.root.path.str().'/' | endif
 
   " directory
   if empty(fn) || fn[-1:] == '/'
@@ -203,6 +207,7 @@ endfunction
 " Returns full path of directory of current file name (which may be a directory).
 function! s:current()
   let fn = expand('%:p', 1)
+  if fn =~ 'NERD_tree_\d\+$' | let fn = b:NERDTree.root.path.str().'/' | endif
   if empty(fn) | return getcwd() | endif  " opening vim without a file
   if g:rooter_resolve_links | let fn = resolve(fn) | endif
   return fnamemodify(fn, ':h')
