@@ -78,7 +78,7 @@ let g:rooter_patterns = ['>Latex']
 To exclude a pattern, prefix it with `!`.
 
 ```viml
-let g:rooter_patterns = ['!=extras', '!^fixtures', '!build/env.sh']
+let g:rooter_patterns = ['!.git/worktrees', '!=extras', '!^fixtures', '!build/env.sh']
 ```
 
 List your exclusions before the patterns you do want.

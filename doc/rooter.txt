@@ -92,7 +92,7 @@ with `>`:
 <
 To exclude a pattern, prefix it with `!`.
 >
-    let g:rooter_patterns = ['!=src', '!build/env.sh', '!^fixtures']
+    let g:rooter_patterns = ['!.git/worktrees', '!=src', '!build/env.sh', '!^fixtures']
 <
 List your exclusions before the patterns you do want.
 
