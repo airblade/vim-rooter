@@ -46,8 +46,7 @@ Rooter manually.
 When Rooter changes the working directory it emits the |autocmd| |User| event
 `RooterChDir`.
 
-Rooter will unset 'autochdir' if it's set.
-
+For triggered buffers, rooter will unset `&autochdir` if it's set. For other buffers, rooter respect user's setting of `&autochdir`.
 
 ==============================================================================
 Configuration                                           *rooter-configuration*
