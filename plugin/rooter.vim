@@ -28,7 +28,7 @@ if !exists('g:rooter_cd_cmd')
 endif
 
 if !exists('g:rooter_patterns')
-  let g:rooter_patterns = ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile']
+  let g:rooter_patterns = ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json']
 endif
 
 if !exists('g:rooter_targets')
