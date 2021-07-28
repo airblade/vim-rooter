@@ -65,7 +65,7 @@ Default: '/,*'
 ------------------------------------------------------------------------------
 How to identify a root directory                           *g:rooter_patterns*
 
-Default: ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile']
+Default: ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json']
 
 Set `g:rooter_patterns` to a list of identifiers.  They are checked breadth-
 first as Rooter walks up the directory tree and the first match is used.
