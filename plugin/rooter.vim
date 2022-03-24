@@ -47,6 +47,10 @@ if !exists('g:rooter_resolve_links')
   let g:rooter_resolve_links = 0
 endif
 
+if !exists('g:rooter_search_to_root')
+  let g:rooter_search_to_root = 0
+endif
+
 
 " For third-parties.  Not used by plugin.
 function! FindRootDirectory()
@@ -117,6 +121,7 @@ endfunction
 function! s:root()
   let dir = s:current()
 
+  let candidate = ''
   " breadth-first search
   while 1
     for pattern in g:rooter_patterns
@@ -129,7 +134,11 @@ function! s:root()
         if exclude
           break
         else
-          return dir
+          if g:rooter_search_to_root
+            let candidate = dir
+          else
+            return dir
+          endif
         endif
       endif
     endfor
@@ -138,7 +147,7 @@ function! s:root()
     if current == dir | break | endif
   endwhile
 
-  return ''
+  return candidate
 endfunction
 
 
