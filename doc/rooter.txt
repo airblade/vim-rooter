@@ -63,6 +63,18 @@ trigger on directories.  For example:
 Default: '/,*'
 
 ------------------------------------------------------------------------------
+Which buftypes Rooter ignores                       *g_rooter_buftype_ingores*
+
+Default: ['quickfix', 'help', 'terminal', 'prompt', 'popup']
+
+Rooter ignores buffer types where it doesn't make sense to look for a root
+directory.  You can customise this:
+>
+    let g:rooter_buftype_ignores =
+            \ ['nowrite', 'quickfix', 'help', 'prompt', 'popup']
+<
+
+------------------------------------------------------------------------------
 How to identify a root directory                           *g:rooter_patterns*
 
 Default: ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json']

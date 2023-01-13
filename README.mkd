@@ -46,6 +46,16 @@ let g:rooter_targets = '*.yml,*.yaml'
 let g:rooter_targets = '/,*.yml,*.yaml'
 ```
 
+### Which buffer types Rooter ignores
+
+Rooter ignores buffer types where it doesn't make sense to look for a root directory:
+
+```viml
+let g:rooter_buftype_ignores = ['quickfix', 'help', 'terminal', 'prompt', 'popup']
+```
+
+However you can customise this if need be.
+
 
 ### How to identify a root directory
 

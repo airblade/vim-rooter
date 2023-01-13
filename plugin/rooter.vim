@@ -27,6 +27,10 @@ if !exists('g:rooter_cd_cmd')
   let g:rooter_cd_cmd = 'cd'
 endif
 
+if !exists('g:rooter_buftype_ignores')
+  let g:rooter_buftype_ignores = ['quickfix', 'help', 'terminal', 'prompt', 'popup']
+endif
+
 if !exists('g:rooter_patterns')
   let g:rooter_patterns = ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json']
 endif
@@ -85,9 +89,7 @@ endfunction
 
 " Returns true if we should change to the buffer's root directory, false otherwise.
 function! s:activate()
-  " Directory browser plugins (e.g. vim-dirvish, NERDTree) tend to
-  " set a nofile buftype when you open a directory.
-  if &buftype != '' && &buftype != 'nofile' | return 0 | endif
+  if index(g:rooter_buftype_ignores, &buftype) > -1 | return 0 | endif
 
   let patterns = split(g:rooter_targets, ',')
   let fn = expand('%:p', 1)
