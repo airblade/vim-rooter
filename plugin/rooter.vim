@@ -27,8 +27,8 @@ if !exists('g:rooter_cd_cmd')
   let g:rooter_cd_cmd = 'cd'
 endif
 
-if !exists('g:rooter_buftype_ignores')
-  let g:rooter_buftype_ignores = ['quickfix', 'help', 'terminal', 'prompt', 'popup']
+if !exists('g:rooter_buftypes')
+  let g:rooter_buftypes = ['', 'nofile', 'nowrite', 'acwrite']
 endif
 
 if !exists('g:rooter_patterns')
@@ -89,7 +89,7 @@ endfunction
 
 " Returns true if we should change to the buffer's root directory, false otherwise.
 function! s:activate()
-  if index(g:rooter_buftype_ignores, &buftype) > -1 | return 0 | endif
+  if index(g:rooter_buftypes, &buftype) == -1 | return 0 | endif
 
   let patterns = split(g:rooter_targets, ',')
   let fn = expand('%:p', 1)

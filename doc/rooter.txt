@@ -63,15 +63,17 @@ trigger on directories.  For example:
 Default: '/,*'
 
 ------------------------------------------------------------------------------
-Which buftypes Rooter ignores                       *g_rooter_buftype_ingores*
+Which buffer types trigger Rooter                          *g:rooter_buftypes*
 
-Default: ['quickfix', 'help', 'terminal', 'prompt', 'popup']
+Default: ['', 'nofile', 'nowrite', 'acwrite']
 
-Rooter ignores buffer types where it doesn't make sense to look for a root
-directory.  You can customise this:
+Rooter only runs in 'buftype's where it makes sense to look for a root
+directory.
+
+A normal file has an empty 'buftype'.  Directory browsing plugins often set the
+'buftype' to "nofile", "nowrite", or "acwrite".  To stick to normal files:
 >
-    let g:rooter_buftype_ignores =
-            \ ['nowrite', 'quickfix', 'help', 'prompt', 'popup']
+    let g:rooter_buftypes = ['']
 <
 
 ------------------------------------------------------------------------------
