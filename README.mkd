@@ -22,7 +22,7 @@ You can turn this off (see below) and use the `:Rooter` command to invoke Rooter
 
 When Rooter changes the working directory it emits the autocmd user event `RooterChDir`.
 
-Rooter will unset `&autochdir` if it's set.
+For triggered buffers, rooter will unset `&autochdir` if it's set. For other buffers, rooter respect user's setting of `&autochdir`.
 
 
 ## Configuration

@@ -14,7 +14,9 @@ if !exists('g:rooter_manual_only')
   let g:rooter_manual_only = 0
 endif
 
+let s:user_autochdir=0
 if exists('+autochdir') && &autochdir && !g:rooter_manual_only
+  let s:user_autochdir=1
   set noautochdir
 endif
 
@@ -70,7 +72,14 @@ augroup END
 
 
 function! s:rooter()
-  if !s:activate() | return | endif
+  if !s:activate() 
+    if s:user_autochdir
+      setl autochdir
+    endif
+    return 
+  endif
+
+  set noautochdir
 
   let root = getbufvar('%', 'rootDir')
   if empty(root)
