@@ -65,7 +65,7 @@ command! -bar RooterToggle call <SID>toggle()
 augroup rooter
   autocmd!
   autocmd VimEnter,BufReadPost,BufEnter * nested if !g:rooter_manual_only | call <SID>rooter(+expand('<abuf>')) | endif
-  autocmd BufWritePost * nested if !g:rooter_manual_only | call setbufvar(+expand('<abuf>'), 'rootDir', '') | call <SID>rooter(+expand('<abuf>')) | endif
+  autocmd BufWritePost * nested if !g:rooter_manual_only | call <SID>clear_cache(+expand('<abuf>')) | call <SID>rooter(+expand('<abuf>')) | endif
 augroup END
 
 
@@ -86,6 +86,11 @@ function! s:rooter(...)
   endif
 
   call s:cd(root)
+endfunction
+
+
+function! s:clear_cache(bufnr)
+  call setbufvar(a:bufnr, 'rootDir', '')
 endfunction
 
 
