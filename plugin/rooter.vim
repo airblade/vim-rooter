@@ -97,7 +97,7 @@ function! s:activate()
   if fn =~ 'NERD_tree_\d\+$' | let fn = b:NERDTree.root.path.str().'/' | endif
 
   " directory
-  if empty(fn) || fn[-1:] == '/'
+  if empty(fn) || isdirectory(fn)
     return index(patterns, '/') != -1
   endif
 
