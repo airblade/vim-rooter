@@ -99,9 +99,7 @@ function! s:activate()
   if index(g:rooter_buftypes, &buftype) == -1 | return 0 | endif
 
   let patterns = split(g:rooter_targets, ',')
-  let fn = expand('%:p', 1)
-
-  if fn =~ 'NERD_tree_\d\+$' | let fn = b:NERDTree.root.path.str().'/' | endif
+  let fn = s:current_file()
 
   " directory
   if empty(fn) || isdirectory(fn)
