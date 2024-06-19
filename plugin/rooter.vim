@@ -123,6 +123,11 @@ endfunction
 " Returns the root directory or an empty string if no root directory found.
 function! s:root()
   let dir = s:current()
+  " current file or directory, for context
+  let curfile = s:current_file()
+  if empty(curfile)
+    let curfile = dir
+  endif
 
   " breadth-first search
   while 1
@@ -132,7 +137,7 @@ function! s:root()
       else
         let [p, exclude] = [pattern, 0]
       endif
-      if s:match(dir, p)
+      if s:match(curfile, dir, p)
         if exclude
           break
         else
@@ -149,7 +154,11 @@ function! s:root()
 endfunction
 
 
-function s:match(dir, pattern)
+function s:match(curfile, dir, pattern)
+  " special-case: only match $HOME via .git if current path is not ignored there
+  if a:dir == $HOME && a:pattern == '.git' && s:has(a:dir, a:pattern)
+    return !s:git_ignored($HOME, a:curfile)
+  endif
   if a:pattern[0] == '='
     return s:is(a:dir, a:pattern[1:])
   elseif a:pattern[0] == '^'
@@ -210,6 +219,17 @@ function! s:child(dir, identifier)
   let path = s:parent(a:dir)
   return fnamemodify(path, ':t') ==# a:identifier
 endfunction
+
+
+" Returns true if the file is gitignored in a given git repository
+"
+" git_dir - full path to the working tree of a git repository
+" file    - full path to the file we are interested in
+function s:git_ignored(git_dir, file)
+  execute system('git -C ' .. shellescape(a:git_dir) .. ' check-ignore -- ' .. shellescape(a:file) .. ' &>/dev/null')
+  return v:shell_error == 0
+endfunction
+
 
 " Returns full path of directory of current file name (which may be a directory).
 function! s:current()
