@@ -51,6 +51,10 @@ if !exists('g:rooter_resolve_links')
   let g:rooter_resolve_links = 0
 endif
 
+if !exists('g:rooter_ignore')
+  let g:rooter_ignore = 0
+endif
+
 
 " For third-parties.  Not used by plugin.
 function! FindRootDirectory()
@@ -124,9 +128,13 @@ endfunction
 function! s:root()
   let dir = s:current()
 
+  let patterns = g:rooter_ignore
+        \      ? s:remove_ignored(g:rooter_patterns, dir, s:current_file())
+        \      : g:rooter_patterns
+
   " breadth-first search
   while 1
-    for pattern in g:rooter_patterns
+    for pattern in patterns
       if pattern[0] == '!'
         let [p, exclude] = [pattern[1:], 1]
       else
@@ -146,6 +154,22 @@ function! s:root()
   endwhile
 
   return ''
+endfunction
+
+
+function! s:remove_ignored(patterns, dir, file)
+  let unignored_patterns = []
+  for pattern in a:patterns
+    if pattern == '.git'
+      call system('git -C ' .. shellescape(a:dir) .. ' check-ignore -q -- ' .. shellescape(a:file))
+      let ignored = !v:shell_error
+      if ignored
+        continue
+      endif
+    endif
+    call add(unignored_patterns, pattern)
+  endfor
+  return unignored_patterns
 endfunction
 
 
