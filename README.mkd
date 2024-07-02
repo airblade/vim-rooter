@@ -114,6 +114,21 @@ List your exclusions before the patterns you do want.
     ```
 
 
+### Ignored files
+
+By default Rooter does not take into account `.gitignore`.
+
+To make Rooter aware of ignored files:
+
+```viml
+let g:rooter_ignore = 1
+```
+
+When this is set, and the file in question is ignored by git, Rooter acts as if `.git` is not in `g:rooter_patterns`.
+
+Support for other VCSs' ignores could be added.
+
+
 ### Running automatically or manually
 
 To toggle between automatic and manual behaviour, use `:RooterToggle`.

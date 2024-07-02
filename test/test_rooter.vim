@@ -38,6 +38,7 @@ function SetUp()
   let g:rooter_change_directory_for_non_project_files = ''
   let g:rooter_silent_chdir = 0
   let g:rooter_resolve_links = 0
+  let g:rooter_ignore = 0
 
   autocmd! User RooterChDir
 
@@ -220,4 +221,9 @@ function Test_root_contains_wildcards()
   let g:rooter_patterns = ['x?z']
   execute 'edit' s:wildcard_dir.'/xyz/m.txt'
   call assert_equal(s:wildcard_dir, getcwd())
+endfunction
+
+function Test_ignore()
+  let g:rooter_ignore = 1
+  " TODO
 endfunction
