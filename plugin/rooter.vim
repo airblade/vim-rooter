@@ -36,7 +36,7 @@ if !exists('g:rooter_patterns')
 endif
 
 if !exists('g:rooter_targets')
-  let g:rooter_targets = '/,*'
+  let g:rooter_targets = ['/', '*']
 endif
 
 if !exists('g:rooter_change_directory_for_non_project_files')
@@ -102,7 +102,11 @@ endfunction
 function! s:activate()
   if index(g:rooter_buftypes, &buftype) == -1 | return 0 | endif
 
-  let patterns = split(g:rooter_targets, ',')
+  if type(g:rooter_targets) == type([])
+    let patterns = g:rooter_targets
+  else
+    let patterns = split(g:rooter_targets, ',')
+  endif
   let fn = s:current_file()
 
   " directory

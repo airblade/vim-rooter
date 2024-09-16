@@ -30,12 +30,19 @@ Rooter will unset `&autochdir` if it's set.
 
 ### Which buffers trigger Rooter
 
-By default all files and directories trigger Rooter.  Configure a comma separated list of patterns to specify which files trigger.  Include `/` to trigger on directories.  For example:
+By default all files and directories trigger Rooter.  Alternatively, set `g:rooter_targets` to a list of file path patterns which should trigger Rooter. Use a literal `/` to match directory buffers. For example:
 
 ```viml
 " Everything (default)
-let g:rooter_targets = '/,*'
+let g:rooter_targets = ['/', '*']
 
+" Directories and everything under /home
+let g:rooter_targets = ['/', '/home/*']
+```
+
+Comma-separated lists are also accepted:
+
+```viml
 " All files
 let g:rooter_targets = '*'
 
