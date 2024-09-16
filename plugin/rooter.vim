@@ -119,8 +119,13 @@ function! s:activate()
   if !exists('*glob2regpat') | return 1 | endif
 
   for p in filter(copy(patterns), 'v:val != "/"')
+    if p[0] == '!'
+      let [p, verdict] = [p[1:], 0]
+    else
+      let [p, verdict] = [p, 1]
+    endif
     if fn =~ glob2regpat(p)
-      return 1
+      return verdict
     endif
   endfor
 
