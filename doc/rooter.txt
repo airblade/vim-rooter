@@ -60,6 +60,11 @@ Rooter. Use a literal `/` to match directory buffers. For example:
 >
     let g:rooter_targets = ['/', '/home/*']
 <
+Patterns are tried in order until one of them matches. To specify a negative
+pattern, prefix it with a `!`. If no patterns match, Rooter is not triggered:
+>
+    let g:rooter_targets = ['!/tmp/*', '/', '*']
+<
 A comma-separated list is also accepted instead of a native list:
 >
     let g:rooter_targets = '/,*.rb,*.haml,*.js'
