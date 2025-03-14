@@ -31,6 +31,10 @@ if !exists('g:rooter_buftypes')
   let g:rooter_buftypes = ['', 'nofile', 'nowrite', 'acwrite']
 endif
 
+if !exists('g:rooter_exclude_filetypes')
+  let g:rooter_exclude_filetypes = []
+endif
+
 if !exists('g:rooter_patterns')
   let g:rooter_patterns = ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json']
 endif
@@ -101,6 +105,7 @@ endfunction
 " Returns true if we should change to the buffer's root directory, false otherwise.
 function! s:activate()
   if index(g:rooter_buftypes, &buftype) == -1 | return 0 | endif
+  if index(g:rooter_exclude_filetypes, &filetype) != -1 | return 0 | endif
 
   if type(g:rooter_targets) == type([])
     let patterns = g:rooter_targets

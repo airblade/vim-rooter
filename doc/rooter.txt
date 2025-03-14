@@ -86,6 +86,13 @@ A normal file has an empty 'buftype'.  Directory browsing plugins often set the
 <
 
 ------------------------------------------------------------------------------
+Which filetypes to exclude when triggering Rooter          *g:rooter_buftypes*
+
+Default: []
+
+Rooter will not run in certain 'filetype's
+
+------------------------------------------------------------------------------
 How to identify a root directory                           *g:rooter_patterns*
 
 Default: ['.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json']
